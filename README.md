@@ -7,11 +7,14 @@ This project is a simple Library Management System implemented in Java using Tes
 - View books in the library
 - Add books to the library
 - Each book has a unique ID
+- Borrow book from the library per user limit(2)
 
 ## Architectural Decisions
-- Used OOP principles to model the `Book` and `Library` classes.
+- Used OOP principles to model the `Book`, `Library`, `User` classes.
 - `Library` maintains a list of books and exposes a method to view them.
 - Used `unmodifiableList` to ensure immutability when retrieving book data.
+- `Library` put, get and removes the book in constant time using map to make library scalable.
+- `User` class can view the books, and borrow books within limit.
 - Followed TDD by writing unit tests before implementation.
 - Each book has a unique identifier (`UUID`) for tracking.
 
@@ -25,12 +28,24 @@ This project is a simple Library Management System implemented in Java using Tes
 ### Demo run
 
 ```
-/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=51019:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/pochasri/temp/LibraryManagement/target/classes LibraryDemo
+/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=54360:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/pochasri/temp/LibraryManagement/target/classes LibraryDemo
+User{name='John Doe', email='john.doe@example.com', id='USRbaf0a733'}
+
 Library is empty
+
 Books in the library:
-Book{id='420e051c-8569-4015-bb1c-edf795af995e', title='The Great Gatsby', author='F. Scott Fitzgerald'}
-Book{id='e96baafb-ec2e-4cb7-ad9c-4237f8be8a30', title='To Kill a Mockingbird', author='Harper Lee'}
-Book{id='189026ec-dfe0-4717-8a06-e9a868907463', title='1984', author='George Orwell'}
+Book{id='BKf0179cfa', title='To Kill a Mockingbird', author='Harper Lee'}
+Book{id='BK61d93d78', title='1984', author='George Orwell'}
+Book{id='BK8aea4e6f', title='The Great Gatsby', author='F. Scott Fitzgerald'}
+
+The Great Gatsby Book borrowed successfully.
+To Kill a Mockingbird Book borrowed successfully.
+
+You have reached the borrowing limit.
+
+Borrowed books
+Book{id='BK8aea4e6f', title='The Great Gatsby', author='F. Scott Fitzgerald'}
+Book{id='BKf0179cfa', title='To Kill a Mockingbird', author='Harper Lee'}
 
 Process finished with exit code 0
 ```

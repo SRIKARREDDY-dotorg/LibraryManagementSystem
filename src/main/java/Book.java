@@ -9,7 +9,7 @@ public class Book {
     private final String id;
 
     public Book(String title, String author) {
-        this.id = UUID.randomUUID().toString();
+        this.id = IdGeneratorUtil.generateBookId();
         this.title = title;
         this.author = author;
     }

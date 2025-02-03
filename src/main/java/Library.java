@@ -1,6 +1,7 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Library class to manage books.
@@ -8,10 +9,10 @@ import java.util.List;
  */
 public class Library {
     private static Library instance;
-    private final List<Book> books;
+    private final Map<String, Book> books;
 
     private Library() {
-        this.books = new ArrayList<>();
+        this.books = new ConcurrentHashMap<String, Book>();
     }
 
     /**
@@ -31,7 +32,16 @@ public class Library {
      * @param book
      */
     public void addBook(Book book) {
-        books.add(book);
+        books.put(book.getId(), book);
+    }
+
+    /**
+     * Remove a book from the library.
+     * @param id
+     * @return
+     */
+    public boolean removeBook(String id) {
+        return books.remove(id) != null;
     }
 
     /**
@@ -39,6 +49,15 @@ public class Library {
      * @return
      */
     public List<Book> viewBooks() {
-        return Collections.unmodifiableList(books);
+        return Collections.unmodifiableList(books.values().stream().toList());
+    }
+
+    /**
+     * Get a book from the library by its id.
+     * @param bookId
+     * @return
+     */
+    public Book getBook(String bookId) {
+        return books.get(bookId);
     }
 }
