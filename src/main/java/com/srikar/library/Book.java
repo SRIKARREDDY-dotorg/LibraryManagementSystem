@@ -1,4 +1,7 @@
-import java.util.UUID;
+package com.srikar.library;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Book class representing a book entity
@@ -6,12 +9,16 @@ import java.util.UUID;
 public class Book {
     private final String title;
     private final String author;
+    @Getter
+    @Setter
+    private int stock;
     private final String id;
 
-    public Book(String title, String author) {
+    public Book(String title, String author, int stock) {
         this.id = IdGeneratorUtil.generateBookId();
         this.title = title;
         this.author = author;
+        this.stock = stock;
     }
 
     public String getId() {
@@ -32,6 +39,7 @@ public class Book {
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
+                ", stock=" + stock +
                 '}';
     }
 }

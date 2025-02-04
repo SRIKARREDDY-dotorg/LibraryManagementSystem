@@ -1,13 +1,23 @@
+package com.srikar.library.user;
+
+import com.srikar.library.Book;
+import com.srikar.library.IdGeneratorUtil;
+import com.srikar.library.Library;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class User {
+    @Getter
     private final String name;
+    @Getter
     private final String email;
+    @Getter
     private final String id;
-    private final Library library;
+    protected final Library library;
+    // Using list as limit is 2
     private final List<Book> borrowedBooks;
     private static final int BORROW_LIMIT = 2;
 
@@ -17,16 +27,6 @@ public class User {
         this.id = IdGeneratorUtil.generateUserId();
         this.library = Library.getInstance();
         this.borrowedBooks = new ArrayList<>();
-    }
-
-    public String getName() {
-        return name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getId() {
-        return id;
     }
 
     /**
@@ -62,13 +62,28 @@ public class User {
         return handleBorrowedBook(book);
     }
     private boolean handleBorrowedBook(Book book) {
+        // check if the same copy present in borrowed books
+        if (borrowedBooks.stream().anyMatch(b -> b.getId().equals(book.getId()))) {
+            System.out.println("You have already borrowed a copy of this book.");
+            return false;
+        }
         if (book == null) {
             System.out.println("Book not found.");
             return false;
         }
+        if (book.getStock() > 1) {
+            book.setStock(book.getStock() - 1); // Reduce stock
+            library.addUser(this);
+        } else {
+            book.setStock(0);
+            library.removeBook(book.getId()); // Remove from library if last copy
+            library.addUser(this);
+        }
         borrowedBooks.add(book);
-        library.removeBook(book.getId());
         System.out.println(book.getTitle() + " Book borrowed successfully.");
+        if(book.getStock() == 0) {
+            System.out.println(book.getTitle() + " Book is out of stock.");
+        }
         return true;
     }
 

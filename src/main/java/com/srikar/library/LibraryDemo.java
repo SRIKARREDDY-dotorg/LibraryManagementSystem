@@ -1,20 +1,26 @@
+package com.srikar.library;
+
+import com.srikar.library.user.Admin;
+import com.srikar.library.user.User;
+
 import java.util.List;
 
 public class LibraryDemo {
     public static void main(String[] args) {
         User user = new User("John Doe", "john.doe@example.com");
+        Admin admin = new Admin("Admin", "admin@example.com");
         System.out.println(user+"\n");
-        // Create a new Library instance
+        // Create a new com.srikar.library.Library instance
         Library library = Library.getInstance();
         user.viewBooks();
         System.out.println("");
         // Add some books to the library
-        Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald");
-        Book book2 = new Book("To Kill a Mockingbird", "Harper Lee");
-        Book book3 = new Book("1984", "George Orwell");
-        library.addBook(book1);
-        library.addBook(book2);
-        library.addBook(book3);
+        Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 2);
+        Book book2 = new Book("To Kill a Mockingbird", "Harper Lee", 1);
+        Book book3 = new Book("1984", "George Orwell", 1);
+        admin.addBook(book1);
+        admin.addBook(book2);
+        admin.addBook(book3);
 
         user.viewBooks();
         System.out.println("");
@@ -28,5 +34,13 @@ public class LibraryDemo {
         // View the borrowed books
         List<Book> borrowedBooks = user.getBorrowedBooks();
         borrowedBooks.stream().forEach(System.out::println);
+
+        System.out.println("");
+        // View inventory
+        admin.checkInventory();
+
+        System.out.println("");
+        // View borrowed books
+        admin.checkBorrowedBooks();
     }
 }
