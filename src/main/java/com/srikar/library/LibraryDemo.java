@@ -12,7 +12,10 @@ public class LibraryDemo {
         System.out.println(user+"\n");
         // Create a new com.srikar.library.Library instance
         Library library = Library.getInstance();
-        user.viewBooks();
+        try {
+            user.viewBooks();
+        } catch (Exception e) {
+        }
         System.out.println("");
         // Add some books to the library
         Book book1 = new Book("The Great Gatsby", "F. Scott Fitzgerald", 2);
@@ -29,7 +32,10 @@ public class LibraryDemo {
         user.borrowBook(book2.getId());
         System.out.println("");
         // show the limit breach
-        user.borrowBook(book3.getId());
+        try {
+            user.borrowBook(book3.getId());
+        } catch (Exception e) {
+        }
         System.out.println("\nBorrowed books");
         // View the borrowed books
         List<Book> borrowedBooks = user.getBorrowedBooks();

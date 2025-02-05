@@ -36,6 +36,7 @@ public class User {
     public void viewBooks() {
         if(library.viewBooks().isEmpty()) {
             System.out.println("Library is empty");
+            throw new IllegalStateException("Library is empty");
         } else {
             printBooks();
         }
@@ -56,7 +57,7 @@ public class User {
     public boolean borrowBook(String bookId) {
         if(borrowedBooks.size() >= BORROW_LIMIT) {
             System.out.println("You have reached the borrowing limit.");
-            return false;
+            throw new IllegalStateException("You have reached the borrowing limit.");
         }
         final Book book = library.getBook(bookId);
         return handleBorrowedBook(book);
@@ -65,11 +66,11 @@ public class User {
         // check if the same copy present in borrowed books
         if (borrowedBooks.stream().anyMatch(b -> b.getId().equals(book.getId()))) {
             System.out.println("You have already borrowed a copy of this book.");
-            return false;
+            throw new IllegalStateException("You have already borrowed a copy of this book.");
         }
         if (book == null) {
             System.out.println("Book not found.");
-            return false;
+            throw new IllegalStateException("Book not found.");
         }
         if (book.getStock() > 1) {
             book.setStock(book.getStock() - 1); // Reduce stock

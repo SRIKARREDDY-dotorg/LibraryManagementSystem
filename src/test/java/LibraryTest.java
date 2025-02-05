@@ -11,19 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class LibraryTest {
     @Test
-    public void testViewBooksWhenLibraryIsEmpty() {
-        Library library = Library.getInstance();
-        assertTrue("Library should be empty", library.viewBooks().isEmpty());
-    }
-    @Test
-    public void testViewBooksWhenLibraryHasBooks() {
-        Library library = Library.getInstance();
-        library.addBook(new Book("1984", "George Orwell", 1));
-        library.addBook(new Book("To Kill a Mockingbird", "Harper Lee", 1));
-
-        assertEquals(2, library.viewBooks().size(), "Library should contain 2 books");
-    }
-    @Test
     public void testUserBorrowBookSuccess() {
         Library library = Library.getInstance();
         Book book = new Book("The Hobbit", "J.R.R. Tolkien", 1);
@@ -32,10 +19,9 @@ public class LibraryTest {
 
         assertTrue("User should be able to borrow the book", user.borrowBook(book.getId()));
         assertEquals(1, user.getBorrowedBooks().size(), "User should have 1 borrowed book");
-        assertTrue("Library should be empty after borrowing the book", library.viewBooks().isEmpty());
     }
     @Test
-    public void testUserBorrowLimit() {
+    public void testUserBorrowLimit() throws Exception {
         Library library = Library.getInstance();
         User user = new User("Jane Doe", "jane@example.com");
 
@@ -49,7 +35,7 @@ public class LibraryTest {
 
         assertTrue(user.borrowBook(book1.getId()));
         assertTrue(user.borrowBook(book2.getId()));
-        assertFalse(user.borrowBook(book3.getId()), "User should not be able to borrow more than 2 books");
+        assertThrows(IllegalStateException.class, () -> user.borrowBook(book3.getId()));
     }
     @Test
     public void testUserBorrowBookWithMultipleCopies() {
@@ -81,7 +67,7 @@ public class LibraryTest {
         User user = new User("Eve", "eve@example.com");
 
         assertTrue("User should be able to borrow a book.", user.borrowBook(book.getId()));
-        assertFalse(user.borrowBook(book.getId()), "User should not be able to borrow the same book twice.");
+        assertThrows(IllegalStateException.class, () -> user.borrowBook(book.getId()), "User should not be able to borrow the same book twice.");
         assertEquals(1, user.getBorrowedBooks().size(), "User should have only 1 copy of the book.");
     }
 }

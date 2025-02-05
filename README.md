@@ -19,6 +19,7 @@ This project is a simple Library Management System implemented in Java using Tes
 - `Admin` class extends the User having all features of User with additional permissions
 - Followed TDD by writing unit tests before implementation.
 - Each book has a unique identifier (`UUID`) for tracking.
+- Added Api's for the User operations, viewBooks, borrowBooks, create user.
 
 ## Assumptions
 - The library starts empty.
