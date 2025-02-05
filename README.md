@@ -25,10 +25,8 @@ This project is a simple Library Management System implemented in Java using Tes
 ## Assumptions
 - The library starts empty.
 - Books have a title, an author, and a unique ID.
+- There exists only one admin in the application.
 - Admin can add books, check inventory and borrowed books
-
-## Class Diagram
-![img.png](img.png)
 
 ### Demo run
 

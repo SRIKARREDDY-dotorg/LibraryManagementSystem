@@ -13,8 +13,8 @@ import java.util.List;
  */
 @Service
 public class UserService {
-    private final List<User> users;
-    private final Library library;
+    protected final List<User> users;
+    protected final Library library;
 
     public UserService() {
         this.users = new ArrayList<>();
@@ -74,7 +74,7 @@ public class UserService {
         }
         throw new UserNotFoundException("User not found with id: " + userId);
     }
-    private User findUserById(String userId) {
+    protected User findUserById(String userId) {
         return users.stream().filter(user -> user.getId().equals(userId)).findFirst().orElse(null);
     }
 }

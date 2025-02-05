@@ -23,7 +23,7 @@ public class Admin extends User {
     /**
      * Check the inventory of the library
      */
-    public void checkInventory() {
+    public List<Book> checkInventory() {
         List<Book> books = library.viewBooks();
         if (books.isEmpty()) {
             System.out.println("Library is empty.");
@@ -33,12 +33,13 @@ public class Admin extends User {
                 System.out.println(book);
             }
         }
+        return books;
     }
 
     /**
      * Check if any user has borrowed books
      */
-    public void checkBorrowedBooks() {
+    public List<Book> checkBorrowedBooks() {
         List<User> users = library.getUsers();
         if (users.isEmpty()) {
             System.out.println("No users have borrowed books.");
@@ -54,5 +55,8 @@ public class Admin extends User {
                 }
             }
         }
+        return users.stream()
+                .flatMap(user -> user.getBorrowedBooks().stream())
+                .toList();
     }
 }
