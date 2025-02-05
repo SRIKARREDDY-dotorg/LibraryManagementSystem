@@ -1,7 +1,8 @@
-package com.srikar.library.user;
+package com.srikar.library.activity.service;
 
-import com.srikar.library.Book;
-import com.srikar.library.Library;
+import com.srikar.library.core.Book;
+import com.srikar.library.core.Library;
+import com.srikar.library.core.User;
 import com.srikar.library.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +29,19 @@ public class UserService {
      * @return
      */
     public User createUser(String name, String email) {
+        validateCreateUserInput(name, email);
         User user = new User(name, email);
         users.add(user);
         return user;
+    }
+
+    private void validateCreateUserInput(String name, String email) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
     }
 
     /**
@@ -39,6 +50,7 @@ public class UserService {
      * @return
      */
     public List<Book> viewBooks(String userId) {
+        validateViewBooks(userId);
         User user = findUserById(userId);
         if (user != null) {
             user.viewBooks(); // This will print to console as per your implementation
@@ -48,6 +60,12 @@ public class UserService {
         throw new UserNotFoundException("User not found with id: " + userId);
     }
 
+    private void validateViewBooks(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+    }
+
     /**
      * Borrow a book from the library
      * @param userId
@@ -55,12 +73,23 @@ public class UserService {
      * @return
      */
     public boolean borrowBook(String userId, String bookId) {
+        validateBorrowBook(userId, bookId);
         User user = findUserById(userId);
         if (user != null) {
             return user.borrowBook(bookId);
         }
         throw new UserNotFoundException("User not found with id: " + userId);
     }
+
+    private void validateBorrowBook(String userId, String bookId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        if (bookId == null || bookId.isEmpty()) {
+            throw new IllegalArgumentException("Book ID cannot be null or empty");
+        }
+    }
+
     /**
      * Return one or more books to the library
      * @param userId
@@ -68,12 +97,23 @@ public class UserService {
      * @return
      */
     public boolean returnBooks(String userId, List<String> bookIds) {
+        validateReturnBooks(userId, bookIds);
         User user = findUserById(userId);
         if (user != null) {
             return user.returnBooks(bookIds);
         }
         throw new UserNotFoundException("User not found with id: " + userId);
     }
+
+    private void validateReturnBooks(String userId, List<String> bookIds) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        if (bookIds == null || bookIds.isEmpty()) {
+            throw new IllegalArgumentException("Book IDs cannot be null or empty");
+        }
+    }
+
     protected User findUserById(String userId) {
         return users.stream().filter(user -> user.getId().equals(userId)).findFirst().orElse(null);
     }

@@ -1,6 +1,4 @@
-package com.srikar.library.user;
-
-import com.srikar.library.Book;
+package com.srikar.library.core;
 
 import java.util.List;
 /**

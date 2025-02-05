@@ -1,5 +1,6 @@
-package com.srikar.library;
+package com.srikar.library.core;
 
+import com.srikar.library.util.IdGeneratorUtil;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
-import com.srikar.library.Book;
-import com.srikar.library.Library;
-import com.srikar.library.user.User;
+import com.srikar.library.core.Book;
+import com.srikar.library.core.Library;
+import com.srikar.library.core.User;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

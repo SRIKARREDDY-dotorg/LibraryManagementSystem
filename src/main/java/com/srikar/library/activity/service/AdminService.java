@@ -1,6 +1,7 @@
-package com.srikar.library.user;
+package com.srikar.library.activity.service;
 
-import com.srikar.library.Book;
+import com.srikar.library.core.Admin;
+import com.srikar.library.core.Book;
 import com.srikar.library.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,9 @@ public class AdminService extends UserService {
      * @param stock
      */
     public Book addBook(String userId, String title, String author, int stock) {
+        validateAddBook(userId, title, author, stock);
         Admin admin = (Admin) findUserById(userId);
         if (admin != null) {
-            if (stock < 1) {
-                throw new IllegalArgumentException("Stock must be greater than 0");
-            }
             Book book = new Book(title, author, stock);
             admin.addBook(book);
             return book;
@@ -36,28 +35,59 @@ public class AdminService extends UserService {
             throw new UserNotFoundException("Admin not found with id: " + userId);
         }
     }
+
+    private void validateAddBook(String userId, String title, String author, int stock) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        if (title == null || title.isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty");
+        }
+        if (author == null || author.isEmpty()) {
+            throw new IllegalArgumentException("Author cannot be null or empty");
+        }
+        if (stock < 1) {
+            throw new IllegalArgumentException("Stock must be greater than 0");
+        }
+    }
+
     /**
      * Check the list of borrowed books
      *
      * @return
      */
     public List<Book> checkBorrowedBooks(String userId) {
+        validateCheckBorrowedBooks(userId);
         Admin admin = (Admin) findUserById(userId);
         if (admin == null) {
             throw new UserNotFoundException("Admin not found with id: " + userId);
         }
         return admin.checkBorrowedBooks();
     }
+
+    private void validateCheckBorrowedBooks(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+    }
+
     /**
      * Check inventory
      *
      * @return
      */
     public List<Book> checkInventory(String userId) {
+        validateCheckInventory(userId);
         Admin admin = (Admin) findUserById(userId);
         if (admin == null) {
             throw new UserNotFoundException("Admin not found");
         }
         return admin.checkInventory();
+    }
+
+    private void validateCheckInventory(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
     }
 }

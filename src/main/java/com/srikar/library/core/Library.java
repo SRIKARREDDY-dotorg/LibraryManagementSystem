@@ -1,6 +1,5 @@
-package com.srikar.library;
+package com.srikar.library.core;
 
-import com.srikar.library.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -9,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * com.srikar.library.Library class to manage books.
+ * Library class to manage books.
  * This class provides functionality to add books and view all books in the library.
  */
 @Service
@@ -24,8 +23,8 @@ public class Library {
     }
 
     /**
-     * Get the singleton instance of the com.srikar.library.Library class.
-     * This method is thread-safe and ensures that only one instance of the com.srikar.library.Library class is created.
+     * Get the singleton instance of the com.srikar.library.core.Library class.
+     * This method is thread-safe and ensures that only one instance of the com.srikar.library.core.Library class is created.
      * @return
      */
     public static synchronized Library getInstance() {

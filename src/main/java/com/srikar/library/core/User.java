@@ -1,8 +1,6 @@
-package com.srikar.library.user;
+package com.srikar.library.core;
 
-import com.srikar.library.Book;
-import com.srikar.library.IdGeneratorUtil;
-import com.srikar.library.Library;
+import com.srikar.library.util.IdGeneratorUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +15,6 @@ public class User {
     private final String email;
     @Getter
     private final String id;
-    @Getter
-    @Setter
-    private boolean isAdmin;
     protected final Library library;
     // Using list as limit is 2
     private final List<Book> borrowedBooks;

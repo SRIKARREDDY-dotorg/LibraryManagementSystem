@@ -1,7 +1,8 @@
 package com.srikar.library;
 
-import com.srikar.library.user.Admin;
-import com.srikar.library.user.User;
+import com.srikar.library.core.Book;
+import com.srikar.library.core.Admin;
+import com.srikar.library.core.User;
 
 import java.util.List;
 
@@ -10,8 +11,6 @@ public class LibraryDemo {
         User user = new User("John Doe", "john.doe@example.com");
         Admin admin = new Admin("Admin", "admin@example.com");
         System.out.println(user+"\n");
-        // Create a new com.srikar.library.Library instance
-        Library library = Library.getInstance();
         try {
             user.viewBooks();
         } catch (Exception e) {

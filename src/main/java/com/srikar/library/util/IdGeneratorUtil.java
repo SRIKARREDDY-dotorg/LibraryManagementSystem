@@ -1,4 +1,4 @@
-package com.srikar.library;
+package com.srikar.library.util;
 
 import java.util.UUID;
 

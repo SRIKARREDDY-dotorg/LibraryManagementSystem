@@ -65,3 +65,24 @@ Book{id='BK8beecf12', title='To Kill a Mockingbird', author='Harper Lee', stock=
 
 Process finished with exit code 0
 ```
+
+### Usage
+
+* Unzip the file and load it in the IntelliJ or some editor.
+* Install mvn and run `mvn install` to install the dependancies.
+* Use `mvn spring-boot:run` for running the application
+* For the sake of easyness: 
+  * Launch the Spring application using the Run button in LibraryApplication class.
+  * Use curl commands to test the api's, 
+  sample
+```
+curl -X POST \
+  'http://localhost:8080/api/users/USR31f9f3b2/addbook' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "stock": 5
+}'
+```
+* Use LibraryDemo class, to test logic without spring application.
