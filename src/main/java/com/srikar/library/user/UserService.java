@@ -61,6 +61,19 @@ public class UserService {
         }
         throw new UserNotFoundException("User not found with id: " + userId);
     }
+    /**
+     * Return one or more books to the library
+     * @param userId
+     * @param bookIds
+     * @return
+     */
+    public boolean returnBooks(String userId, List<String> bookIds) {
+        User user = findUserById(userId);
+        if (user != null) {
+            return user.returnBooks(bookIds);
+        }
+        throw new UserNotFoundException("User not found with id: " + userId);
+    }
     private User findUserById(String userId) {
         return users.stream().filter(user -> user.getId().equals(userId)).findFirst().orElse(null);
     }

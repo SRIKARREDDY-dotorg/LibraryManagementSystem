@@ -81,4 +81,30 @@ public class UserController {
                     .body(new ErrorResponse(e.getMessage()));
         }
     }
+    /**
+     * Return one or more books to the library
+     * @param userId
+     * @param bookIds
+     * @return
+     */
+    @PostMapping("/{userId}/books/return")
+    public ResponseEntity<?> returnBooks(
+            @PathVariable String userId,
+            @RequestBody List<String> bookIds) {
+        try {
+            boolean returned = userService.returnBooks(userId, bookIds);
+            if (returned) {
+                return ResponseEntity.ok("Books returned successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorResponse("Unable to return books. due to unknown reason"));
+            }
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("User not found"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
+    }
 }

@@ -3,6 +3,8 @@ import com.srikar.library.Library;
 import com.srikar.library.user.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,5 +71,16 @@ public class LibraryTest {
         assertTrue("User should be able to borrow a book.", user.borrowBook(book.getId()));
         assertThrows(IllegalStateException.class, () -> user.borrowBook(book.getId()), "User should not be able to borrow the same book twice.");
         assertEquals(1, user.getBorrowedBooks().size(), "User should have only 1 copy of the book.");
+    }
+    @Test
+    public void testUserReturnBookSuccess() {
+        Library library = Library.getInstance();
+        Book book = new Book("The Great Gatsby", "F. Scott Fitzgerald", 1);
+        library.addBook(book);
+        User user = new User("Bob", "bob@example.com");
+
+        user.borrowBook(book.getId());
+        assertTrue("User should be able to return the book.", user.returnBooks(List.of(book.getId())));
+        assertEquals(0, user.getBorrowedBooks().size(), "User should have no borrowed books.");
     }
 }

@@ -89,6 +89,42 @@ public class User {
     }
 
     /**
+     * Return one or more books to the library
+     * @param bookIds List of book IDs to be returned
+     * @return boolean indicating success or failure
+     */
+    public boolean returnBooks(List<String> bookIds) {
+        if (bookIds.isEmpty()) {
+            throw new IllegalArgumentException("No books specified for return.");
+        }
+        handleReturnedBook(bookIds);
+        return true;
+    }
+
+    private void handleReturnedBook(List<String> bookIds) {
+        for (String bookId : bookIds) {
+            Book bookToReturn = borrowedBooks.stream()
+                    .filter(book -> book.getId().equals(bookId))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("You haven't borrowed the book with ID: " + bookId));
+
+            borrowedBooks.remove(bookToReturn);
+
+            // Check if the book exists in the library
+            Book libraryBook = library.getBook(bookId);
+            if (libraryBook == null) {
+                // If the book was removed earlier, add it back
+                libraryBook = new Book(bookToReturn.getTitle(), bookToReturn.getAuthor(), 1);
+                library.addBook(libraryBook);
+            } else {
+                // If the book still exists, increase the stock
+                libraryBook.setStock(libraryBook.getStock() + 1);
+            }
+
+            System.out.println(bookToReturn.getTitle() + " returned successfully.");
+        }
+    }
+    /**
      * Get a list of borrowed books
      * @return
      */

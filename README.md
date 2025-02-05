@@ -9,6 +9,7 @@ This project is a simple Library Management System implemented in Java using Tes
 - Each book has a unique ID
 - Borrow book from the library per user limit(2)
 - Multiple copies of books are handled
+- Return valid books from the user to library. 
 
 ## Architectural Decisions
 - Used OOP principles to model the `Book`, `Library`, `User` classes.

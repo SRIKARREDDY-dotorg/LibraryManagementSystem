@@ -48,5 +48,12 @@ public class LibraryDemo {
         System.out.println("");
         // View borrowed books
         admin.checkBorrowedBooks();
+        System.out.println("");
+
+        // Return a book
+        user.returnBooks(List.of(book1.getId()));
+        System.out.println("");
+        // View borrowed books
+        admin.checkBorrowedBooks();
     }
 }
