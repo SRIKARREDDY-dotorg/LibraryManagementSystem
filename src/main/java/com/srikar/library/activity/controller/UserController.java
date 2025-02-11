@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Controller class for handling user-related operations
  */
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/users")
 public abstract class UserController {
@@ -28,12 +29,16 @@ public abstract class UserController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
+    public ResponseEntity<?> createUser(@RequestBody UserCreateRequest request) {
         try {
             User user = userService.createUser(request.getName(), request.getEmail());
             return ResponseEntity.ok(user);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("An unexpected error occurred"));
         }
     }
 
