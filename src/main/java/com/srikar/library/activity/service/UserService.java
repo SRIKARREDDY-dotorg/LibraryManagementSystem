@@ -46,18 +46,10 @@ public class UserService {
 
     /**
      * View all books in the library
-     * @param userId
      * @return
      */
-    public List<Book> viewBooks(String userId) {
-        validateViewBooks(userId);
-        User user = findUserById(userId);
-        if (user != null) {
-            user.viewBooks(); // This will print to console as per your implementation
-            return library.viewBooks();
-        }
-        System.out.println("User not found with id: " + userId);
-        throw new UserNotFoundException("User not found with id: " + userId);
+    public List<Book> viewBooks() {
+        return library.viewBooks();
     }
 
     private void validateViewBooks(String userId) {
