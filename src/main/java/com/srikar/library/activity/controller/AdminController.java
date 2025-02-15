@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,10 +28,10 @@ public class AdminController extends UserController {
 
     // Override the parent class methods you want to customize
     @Override
-    @GetMapping("/{userId}/books")
-    public ResponseEntity<?> viewBooks(@PathVariable String userId) {
+    @GetMapping("/books")
+    public ResponseEntity<?> viewBooks(@RequestHeader("Authorization") String token) {
         // Add admin-specific logic here if needed
-        return super.viewBooks(userId);
+        return super.viewBooks(token);
     }
     @Override
     @PostMapping("/{userId}/books/{bookId}/borrow")

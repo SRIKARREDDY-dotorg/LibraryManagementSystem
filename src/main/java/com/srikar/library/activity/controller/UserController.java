@@ -5,11 +5,14 @@ import com.srikar.library.dto.ErrorResponse;
 import com.srikar.library.dto.UserCreateRequest;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.activity.service.UserService;
+import com.srikar.library.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import com.srikar.library.core.Book;
 import java.util.List;
 
 /**
@@ -22,6 +25,8 @@ public abstract class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     /**
      * Create a new user
@@ -44,15 +49,23 @@ public abstract class UserController {
 
     /**
      * View all books in library
-     * @param userId
      * @return
      */
-    @GetMapping("/{userId}/books")
-    public ResponseEntity<?> viewBooks(@PathVariable String userId) {
+    @GetMapping("/books")
+    public ResponseEntity<?> viewBooks(@RequestHeader ("Authorization") String token) {
         try {
-            List<Book> books = userService.viewBooks(userId);
-            return ResponseEntity.ok(books);
-        } catch (UserNotFoundException e) {
+            // Get authenticated user from SecurityContext
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ErrorResponse("Unauthorized"));
+            }
+
+            // Extract userId from authenticated UserDetails
+            String userId = authentication.getName();  // This comes from JWT
+            System.out.println("User ID on books: "+ userId);
+            return ResponseEntity.ok(userService.viewBooks());
+        } catch (UserNotFoundException | UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("User not found"));
         } catch (IllegalStateException | IllegalArgumentException e) {
@@ -63,7 +76,6 @@ public abstract class UserController {
                     .body(new ErrorResponse("An unexpected error occurred"));
         }
     }
-
 
     /**
      * Borrow a book from the library
