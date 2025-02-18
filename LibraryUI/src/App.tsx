@@ -1,20 +1,9 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
+import {Home} from "./components/Home.tsx";
 
 const API_BASE_URL = "http://localhost:8080/api/users";
-
-function Home() {
-    return (
-        <div className="p-4 max-w-md mx-auto">
-            <h1 className="text-xl font-bold">Library Management</h1>
-            <nav>
-                <Link to="/create-user" className="block p-2 bg-blue-500 text-white m-2">Create User</Link>
-                <Link to="/books" className="block p-2 bg-green-500 text-white m-2">View Books</Link>
-            </nav>
-        </div>
-    );
-}
 
 function CreateUser() {
     const [name, setName] = useState("");
