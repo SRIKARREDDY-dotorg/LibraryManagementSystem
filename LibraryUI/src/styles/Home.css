@@ -1,0 +1,76 @@
+/* Full-page centered layout */
+.library-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url("https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYm5vaHNuemZ4dHRoNXE5emxjYWJtOTl2dWplNXM4cnVuanQ3NmFhYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3osxYeLtSKwjXs8zU4/giphy.gif") center/cover no-repeat;
+    animation: fadeIn 2s ease-in-out;
+}
+
+/* Optional: Fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Card Styling */
+.library-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 320px;
+}
+
+.library-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s ease;
+}
+
+.login-button {
+    background: #3b82f6;
+    color: white;
+}
+
+.signup-button {
+    background: #10b981;
+    color: white;
+}
+
+.auth-button:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+}
