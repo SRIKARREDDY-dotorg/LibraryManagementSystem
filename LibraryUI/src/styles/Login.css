@@ -1,0 +1,83 @@
+/* Login Page Styles */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.login-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+.login-card h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.login-input-group {
+    position: relative;
+    width: 300px;
+    margin-bottom: 1rem;
+}
+
+.login-input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Icons */
+.login-input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+}
+
+/* Button */
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+}
+
+.login-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 1rem;
+}
+
+/* Link */
+.login-small-text {
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.login-small-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-small-text a:hover {
+    text-decoration: underline;
+}

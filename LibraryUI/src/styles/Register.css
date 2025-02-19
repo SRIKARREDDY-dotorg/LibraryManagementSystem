@@ -1,0 +1,82 @@
+/* Register Page Styles */
+.register-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #4CAF50, #FFC107);
+}
+
+.register-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+.register-card h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.register-input-group {
+    position: relative;
+    width: 300px;
+    margin-bottom: 1rem;
+}
+
+.register-input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Icons */
+.register-input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: gray;
+}
+
+/* Button */
+.register-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.register-button:hover {
+    background-color: #218838;
+}
+
+.register-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 1rem;
+}
+
+/* Link */
+.register-small-text {
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.register-small-text a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-small-text a:hover {
+    text-decoration: underline;
+}

@@ -60,12 +60,12 @@
     transition: 0.3s ease;
 }
 
-.login-button {
+.login-button-home {
     background: #3b82f6;
     color: white;
 }
 
-.signup-button {
+.signup-button-home {
     background: #10b981;
     color: white;
 }
