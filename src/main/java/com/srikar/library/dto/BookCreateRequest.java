@@ -4,6 +4,10 @@ public class BookCreateRequest {
     private String title;
     private String author;
     private int stock;
+    private String url;
+    public String getUrl() {
+        return url;
+    }
     public String getTitle() {
         return title;
     }

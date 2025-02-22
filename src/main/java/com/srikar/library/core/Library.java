@@ -63,7 +63,7 @@ public class Library {
      * @return
      */
     public List<Book> viewBooks() {
-        return Collections.unmodifiableList(books.values().stream().toList());
+        return books.values().stream().toList();
     }
 
     /**

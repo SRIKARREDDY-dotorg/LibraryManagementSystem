@@ -1,7 +1,7 @@
 package com.srikar.library.activity.service;
 
-import com.srikar.library.dao.UserModel;
-import com.srikar.library.dao.UserRepository;
+import com.srikar.library.dao.user.UserModel;
+import com.srikar.library.dao.user.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

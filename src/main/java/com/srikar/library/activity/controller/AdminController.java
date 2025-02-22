@@ -4,7 +4,6 @@ import com.srikar.library.dto.BookCreateRequest;
 import com.srikar.library.dto.ErrorResponse;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.activity.service.AdminService;
-import com.srikar.library.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,9 +30,8 @@ public class AdminController extends UserController {
     // Override the parent class methods you want to customize
     @Override
     @GetMapping("/books")
-    public ResponseEntity<?> viewBooks(@RequestHeader("Authorization") String token) {
-        System.out.println("The guy accessing is " + (isAdmin() ? "ADMIN": "USER"));
-        return super.viewBooks(token);
+    public ResponseEntity<?> viewBooks() {
+        return super.viewBooks();
     }
     @Override
     @PostMapping("/{userId}/books/{bookId}/borrow")
@@ -52,10 +49,14 @@ public class AdminController extends UserController {
         // Add admin-specific logic here if needed
         return super.returnBooks(userId, bookIds);
     }
-    @PostMapping("/{userId}/addbook")
-    public ResponseEntity<?> addBook(@PathVariable String userId, @RequestBody BookCreateRequest request) {
+    @PostMapping("/add_book")
+    public ResponseEntity<?> addBook(@RequestBody BookCreateRequest request) {
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse("Access denied"));
+        }
         try{
-            return ResponseEntity.ok(adminService.addBook(userId, request.getTitle(), request.getAuthor(), request.getStock()));
+            return ResponseEntity.ok(adminService.addBook(request.getTitle(), request.getAuthor(), request.getStock(), request.getUrl()));
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("User not found"));

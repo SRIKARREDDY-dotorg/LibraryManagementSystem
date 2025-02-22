@@ -10,12 +10,14 @@ import lombok.Setter;
 public class Book {
     private final String title;
     private final String author;
+    private final String url;
     @Getter
     @Setter
     private int stock;
     private final String id;
 
-    public Book(String title, String author, int stock) {
+    public Book(String title, String author, int stock, String url) {
+        this.url = url;
         this.id = IdGeneratorUtil.generateBookId();
         this.title = title;
         this.author = author;
@@ -33,7 +35,9 @@ public class Book {
     public String getAuthor() {
         return author;
     }
-
+    public String getUrl() {
+        return url;
+    }
     @Override
     public String toString() {
         return "Book{" +

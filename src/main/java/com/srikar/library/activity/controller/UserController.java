@@ -32,11 +32,8 @@ public abstract class UserController {
      * @return
      */
     @GetMapping("/books")
-    public ResponseEntity<?> viewBooks(@RequestHeader ("Authorization") String token) {
+    public ResponseEntity<?> viewBooks() {
         try {
-            // Extract userId
-            String userId = SecurityContextHolder.getContext().getAuthentication().getName();  // This comes from JWT
-            System.out.println("User ID on books: "+ userId);
             return ResponseEntity.ok(userService.viewBooks());
         } catch (UserNotFoundException | UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
