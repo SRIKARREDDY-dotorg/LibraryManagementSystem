@@ -6,6 +6,7 @@ import com.srikar.library.dto.AuthResponse;
 import com.srikar.library.dto.AuthRequest;
 import com.srikar.library.util.JwtUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +42,8 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
         UserModel user = userOptional.get();
-        String token = jwtUtil.generateToken(user.getEmail());
+        final String role = user.getEmail().equals("admin@example.com") ? "ADMIN" : "USER";
+        String token = jwtUtil.generateToken(user.getEmail(), role);
         return ResponseEntity.ok(new AuthResponse(token));
     }
     @PostMapping("/register")
