@@ -2,6 +2,8 @@ package com.srikar.library.activity.service;
 
 import com.srikar.library.core.Admin;
 import com.srikar.library.core.Book;
+import com.srikar.library.dao.book.BookModel;
+import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +12,10 @@ import java.util.List;
 @Service
 public class AdminService extends UserService {
     private final Admin admin;
-    public AdminService() {
+    private final BookRepository bookRepository;
+    public AdminService(BookRepository bookRepository) {
         super();
+        this.bookRepository = bookRepository;
         admin = new Admin("admin", "admin@example.com");
         System.out.println(admin);
         users.add(admin);
@@ -19,21 +23,22 @@ public class AdminService extends UserService {
 
     /**
      * Add a new book to the library
-     * @param userId
      * @param title
      * @param author
      * @param stock
      */
-    public Book addBook(String userId, String title, String author, int stock) {
-        validateAddBook(userId, title, author, stock);
-        Admin admin = (Admin) findUserById(userId);
-        if (admin != null) {
-            Book book = new Book(title, author, stock);
-            admin.addBook(book);
-            return book;
-        } else {
-            throw new UserNotFoundException("Admin not found with id: " + userId);
-        }
+    public Book addBook(String title, String author, int stock, String url) {
+        Book book = new Book(title, author, stock, url);
+        BookModel bookModel = BookModel.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .stock(book.getStock())
+                .url(book.getUrl())
+                .build();
+        bookRepository.save(bookModel);
+        admin.addBook(book);
+        return book;
     }
 
     private void validateAddBook(String userId, String title, String author, int stock) {

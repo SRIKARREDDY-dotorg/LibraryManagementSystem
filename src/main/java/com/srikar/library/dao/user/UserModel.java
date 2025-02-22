@@ -1,4 +1,4 @@
-package com.srikar.library.dao;
+package com.srikar.library.dao.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

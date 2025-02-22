@@ -3,7 +3,10 @@ package com.srikar.library.activity.service;
 import com.srikar.library.core.Book;
 import com.srikar.library.core.Library;
 import com.srikar.library.core.User;
+import com.srikar.library.dao.book.BookModel;
+import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.exception.UserNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,33 +18,11 @@ import java.util.List;
 @Service
 public class UserService {
     protected final List<User> users;
-    protected final Library library;
+    @Autowired
+    private BookRepository bookRepository;
 
     public UserService() {
         this.users = new ArrayList<>();
-        this.library = Library.getInstance();
-    }
-
-    /**
-     * Create a new user
-     * @param name
-     * @param email
-     * @return
-     */
-    public User createUser(String name, String email) {
-        validateCreateUserInput(name, email);
-        User user = new User(name, email);
-        users.add(user);
-        return user;
-    }
-
-    private void validateCreateUserInput(String name, String email) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be null or empty");
-        }
     }
 
     /**
@@ -49,13 +30,16 @@ public class UserService {
      * @return
      */
     public List<Book> viewBooks() {
-        return library.viewBooks();
-    }
-
-    private void validateViewBooks(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
+        // later add pagination
+        // for now return all books
+        // simplify the code
+        return bookRepository.findAll().stream()
+                .map(bookModel -> new Book(
+                        bookModel.getTitle(),
+                        bookModel.getAuthor(),
+                        bookModel.getStock(),
+                        bookModel.getUrl()))
+                .toList();
     }
 
     /**

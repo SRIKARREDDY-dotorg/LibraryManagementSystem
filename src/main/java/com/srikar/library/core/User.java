@@ -28,26 +28,6 @@ public class User {
     }
 
     /**
-     * If Empty print empty library
-     * else print all books
-     */
-    public void viewBooks() {
-        if(library.viewBooks().isEmpty()) {
-            System.out.println("Library is empty");
-            throw new IllegalStateException("Library is empty");
-        } else {
-            printBooks();
-        }
-    }
-
-    private void printBooks() {
-        System.out.println("Books in the library:");
-        for (Book book : library.viewBooks()) {
-            System.out.println(book);
-        }
-    }
-
-    /**
      * Borrow a book from the library by its id
      * @param bookId
      * @return boolean
@@ -112,7 +92,7 @@ public class User {
             Book libraryBook = library.getBook(bookId);
             if (libraryBook == null) {
                 // If the book was removed earlier, add it back
-                libraryBook = new Book(bookToReturn.getTitle(), bookToReturn.getAuthor(), 1);
+                libraryBook = new Book(bookToReturn.getTitle(), bookToReturn.getAuthor(), 1, bookToReturn.getUrl());
                 library.addBook(libraryBook);
             } else {
                 // If the book still exists, increase the stock

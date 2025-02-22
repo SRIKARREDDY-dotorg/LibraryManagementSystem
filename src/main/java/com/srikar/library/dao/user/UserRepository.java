@@ -1,4 +1,4 @@
-package com.srikar.library.dao;
+package com.srikar.library.dao.user;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

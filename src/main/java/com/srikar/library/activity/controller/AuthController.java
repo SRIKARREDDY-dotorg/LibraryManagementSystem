@@ -1,12 +1,11 @@
 package com.srikar.library.activity.controller;
 
-import com.srikar.library.dao.UserModel;
-import com.srikar.library.dao.UserRepository;
+import com.srikar.library.dao.user.UserModel;
+import com.srikar.library.dao.user.UserRepository;
 import com.srikar.library.dto.AuthResponse;
 import com.srikar.library.dto.AuthRequest;
 import com.srikar.library.util.JwtUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
