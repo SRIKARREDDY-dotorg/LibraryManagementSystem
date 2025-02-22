@@ -4,9 +4,12 @@ import com.srikar.library.dto.BookCreateRequest;
 import com.srikar.library.dto.ErrorResponse;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.activity.service.AdminService;
+import com.srikar.library.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +33,7 @@ public class AdminController extends UserController {
     @Override
     @GetMapping("/books")
     public ResponseEntity<?> viewBooks(@RequestHeader("Authorization") String token) {
-        // Add admin-specific logic here if needed
+        System.out.println("The guy accessing is " + (isAdmin() ? "ADMIN": "USER"));
         return super.viewBooks(token);
     }
     @Override
@@ -93,5 +96,11 @@ public class AdminController extends UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponse("An unexpected error occurred"));
         }
+    }
+    private boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role -> role.equals("ROLE_ADMIN"));
     }
 }
