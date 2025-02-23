@@ -1,5 +1,5 @@
 import "../styles/Books.css"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 interface Book {
     id: string;
@@ -12,46 +12,42 @@ interface Book {
 type FilterType = 'all' | 'available' | 'out-of-stock';
 
 export const Books = () => {
+    const [books, setBooks] = useState<Book[]>([]);
     const [filter, setFilter] = useState<FilterType>('all');
-    // Static book list
-    const books: Book[] = [
-        {
-            id: "1",
-            title: "The Great Gatsby",
-            author: "F. Scott Fitzgerald",
-            url: "https://cdn.kobo.com/book-images/f37f5bc2-8171-475a-99fb-2f807813e085/1200/1200/False/the-great-gatsby-deluxe-hardbound-edition.jpg",
-            stock: 5
-        },
-        {
-            id: "2",
-            title: "To Kill a Mockingbird",
-            author: "Harper Lee",
-            url: "https://m.media-amazon.com/images/I/811NqsxadrS._AC_UF1000,1000_QL80_.jpg",
-            stock: 3
-        },
-        {
-            id: "3",
-            title: "1984",
-            author: "George Orwell",
-            url: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327144697i/3744438.jpg",
-            stock: 7
-        },
-        {
-            id: "4",
-            title: "Pride and Prejudice",
-            author: "Jane Austen",
-            url: "https://m.media-amazon.com/images/I/81mTGi9gs-L._AC_UF1000,1000_QL80_.jpg",
-            stock: 2
-        },
-        {
-            id: "5",
-            title: "The Hobbit",
-            author: "J.R.R. Tolkien",
-            url: "https://m.media-amazon.com/images/I/717TGeIkVML._AC_UF1000,1000_QL80_.jpg",
-            stock: 4
-        }
-    ];
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        fetchBooks();
+    }, []);
+    // Static book list
+    const fetchBooks = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("No authentication token found");
+            }
+
+            const response = await fetch('http://localhost:8080/api/users/books', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch books');
+            }
+            const data = await response.json();
+            setBooks(data);
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+            setIsLoading(false);
+        }
+    }
     const filteredBooks = books.filter(book => {
         switch (filter) {
             case 'available':
@@ -63,10 +59,29 @@ export const Books = () => {
         }
     });
 
+    if (isLoading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Loading books...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <p className="error-message">{error}</p>
+                <button className="retry-button" onClick={fetchBooks}>
+                    Try Again
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="books-container">
             <div className="books-header">
-                <h1 className="books-title">Available Books</h1>
                 <div className="filter-controls">
                     <button
                         className={`filter-button ${filter === 'all' ? 'active' : ''}`}
