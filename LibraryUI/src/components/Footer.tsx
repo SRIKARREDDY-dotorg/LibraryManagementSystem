@@ -3,11 +3,11 @@ export const Footer = () => {
         <footer style={{
             padding: '1rem',
             backgroundColor: 'lightgrey',
-            position: 'fixed',
             bottom: 0,
-            width: '100%'
+            width: '100%',
+            minHeight: '10vh'
         }}>
-            <p>© 2024 Library Management System. All rights reserved.</p>
+            <p>© 2025 Library Management System. All rights reserved.</p>
         </footer>
     );
 };
