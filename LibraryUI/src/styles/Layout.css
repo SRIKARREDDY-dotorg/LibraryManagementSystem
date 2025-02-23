@@ -7,6 +7,6 @@
 
 .main-content {
     flex: 1;
-    margin-top: 70px; /* Adjust this value based on your header height */
+    margin-top: 5px; /* Adjust this value based on your header height */
     margin-bottom: 60px; /* Adjust this value based on your footer height */
 }
