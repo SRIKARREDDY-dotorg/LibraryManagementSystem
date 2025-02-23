@@ -1,9 +1,7 @@
 package com.srikar.library.activity.service;
 
 import com.srikar.library.core.Book;
-import com.srikar.library.core.Library;
 import com.srikar.library.core.User;
-import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
