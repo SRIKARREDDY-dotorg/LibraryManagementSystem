@@ -1,5 +1,6 @@
 import "../styles/Books.css"
 import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 interface Book {
     id: string;
@@ -16,6 +17,8 @@ export const Books = () => {
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchBooks();
@@ -101,6 +104,9 @@ export const Books = () => {
                     >
                         Out of Stock
                     </button>
+                </div>
+                <div className="add_book">
+                    <button className="add-book-button" onClick={() => navigate('/add_book')}> + Add Book</button>
                 </div>
             </div>
             <div className="books-grid">

@@ -33,6 +33,7 @@ public class UserService {
         // simplify the code
         return bookRepository.findAll().stream()
                 .map(bookModel -> new Book(
+                        bookModel.getId(),
                         bookModel.getTitle(),
                         bookModel.getAuthor(),
                         bookModel.getStock(),

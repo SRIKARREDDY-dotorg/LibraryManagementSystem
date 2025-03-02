@@ -68,6 +68,25 @@ public class AdminController extends UserController {
                     .body(new ErrorResponse("An unexpected error occurred"));
         }
     }
+    @PostMapping("/update_book")
+    public ResponseEntity<?> updateBook(@RequestBody BookCreateRequest request) {
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse("Access denied"));
+        }
+        try{
+            return ResponseEntity.ok(adminService.updateBook(request.getId(), request.getTitle(), request.getAuthor(), request.getStock(), request.getUrl()));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("User not found"));
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("An unexpected error occurred"));
+        }
+    }
     @GetMapping("/{userId}/checkInventory")
     public ResponseEntity<?> checkInventory(@PathVariable String userId) {
         try{
