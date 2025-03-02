@@ -43,7 +43,7 @@ public class AuthController {
         UserModel user = userOptional.get();
         final String role = user.getEmail().equals("admin@example.com") ? "ADMIN" : "USER";
         String token = jwtUtil.generateToken(user.getEmail(), role);
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(new AuthResponse(token, role));
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {

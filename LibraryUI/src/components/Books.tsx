@@ -1,6 +1,7 @@
 import "../styles/Books.css"
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../context/AuthContext.tsx";
 
 interface Book {
     id: string;
@@ -19,6 +20,15 @@ export const Books = () => {
     const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
+
+    const { role, isAuthenticated } = useAuth();
+    if (!isAuthenticated) {
+        return (
+            <div className="unauthorized-container">
+                <p className="unauthorized-message">You are not authorized to view this page.</p>
+            </div>
+        );
+    }
 
     useEffect(() => {
         fetchBooks();
@@ -105,9 +115,11 @@ export const Books = () => {
                         Out of Stock
                     </button>
                 </div>
-                <div className="add_book">
-                    <button className="add-book-button" onClick={() => navigate('/add_book')}> + Add Book</button>
-                </div>
+                {role === 'ADMIN' && (
+                    <div className="add_book">
+                        <button className="add-book-button" onClick={() => navigate('/add_book')}> + Add Book</button>
+                    </div>
+                )}
             </div>
             <div className="books-grid">
                 {filteredBooks.length > 0 ? (
@@ -131,12 +143,21 @@ export const Books = () => {
                                         {book.stock > 0 ? `${book.stock} available` : 'Out of stock'}
                                     </span>
                                 </div>
-                                <button
-                                    className="borrow-button"
-                                    disabled={book.stock === 0}
-                                >
-                                    Borrow Book
-                                </button>
+                                {role === 'ADMIN' &&
+                                    <div className="book-actions">
+                                        <button
+                                            className="borrow-button"
+                                            disabled={book.stock === 0}
+                                        >
+                                            Borrow Book
+                                        </button>
+                                        <button
+                                            className="return-button"
+                                        >
+                                            Return Book
+                                        </button>
+                                    </div>
+                                }
                             </div>
                         </div>
                     ))
