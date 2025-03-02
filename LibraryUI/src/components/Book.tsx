@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Book.css';
+import {useAuth} from "../context/AuthContext.tsx";
 
 interface BookFormData {
     title: string;
@@ -14,7 +15,14 @@ export const Book = () => {
         author: '',
         url: ''
     });
-
+    const { role, isAuthenticated } = useAuth();
+    if (!isAuthenticated || role !== 'ADMIN') {
+        return (
+            <div className="unauthorized-container">
+                <p className="unauthorized-message">You are not authorized to view this page.</p>
+            </div>
+        );
+    }
     const [errors, setErrors] = useState<Partial<BookFormData>>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +44,7 @@ export const Book = () => {
             newErrors.author = 'Author is required';
         }
 
-        if (formData.stock < 0) {
+        if (formData?.stock && formData.stock < 0) {
             newErrors.stock = 0;
         }
 

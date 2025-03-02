@@ -6,9 +6,14 @@ package com.srikar.library.dto;
  */
 public class AuthResponse {
     private String token;
+    private String role;
 
-    public AuthResponse(String token) {
+    public AuthResponse(String token, String role) {
         this.token = token;
+        this.role =  role;
+    }
+    public String getRole() {
+        return role;
     }
 
     public String getToken() {

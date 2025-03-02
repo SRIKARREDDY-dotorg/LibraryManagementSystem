@@ -2,12 +2,14 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
+import {useAuth} from "../context/AuthContext.tsx";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { setRole } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -16,6 +18,7 @@ export const Login = () => {
                 email,
                 password,
             });
+            setRole(response.data.role);
             localStorage.setItem("token", response.data.token);
             navigate("/books"); // Redirect to a dashboard/home page
         } catch (err) {
