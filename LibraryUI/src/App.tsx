@@ -4,6 +4,7 @@ import {Login} from "./components/Login.tsx";
 import {Register} from "./components/Register.tsx";
 import {Layout} from "./components/Layout.tsx";
 import {Books} from "./components/Books.tsx";
+import {Book} from "./components/Book.tsx";
 
 export default function LibraryApp() {
     return (
@@ -14,6 +15,7 @@ export default function LibraryApp() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                     <Route path="/books" element={<Books />} />
+                    <Route path="/add_book" element={<Book />}/>
                     {/* Add more routes as needed */}
                 </Route>
             </Routes>

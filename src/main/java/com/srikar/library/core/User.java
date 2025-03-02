@@ -92,7 +92,7 @@ public class User {
             Book libraryBook = library.getBook(bookId);
             if (libraryBook == null) {
                 // If the book was removed earlier, add it back
-                libraryBook = new Book(bookToReturn.getTitle(), bookToReturn.getAuthor(), 1, bookToReturn.getUrl());
+                libraryBook = new Book(bookToReturn.getId(), bookToReturn.getTitle(), bookToReturn.getAuthor(), 1, bookToReturn.getUrl());
                 library.addBook(libraryBook);
             } else {
                 // If the book still exists, increase the stock

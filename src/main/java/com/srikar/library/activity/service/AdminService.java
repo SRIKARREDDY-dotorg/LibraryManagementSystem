@@ -5,6 +5,7 @@ import com.srikar.library.core.Book;
 import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.exception.UserNotFoundException;
+import com.srikar.library.util.IdGeneratorUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,8 @@ public class AdminService extends UserService {
      * @param stock
      */
     public Book addBook(String title, String author, int stock, String url) {
-        Book book = new Book(title, author, stock, url);
+        final String bookId = IdGeneratorUtil.generateBookId();
+        Book book = new Book(bookId, title, author, stock, url);
         BookModel bookModel = BookModel.builder()
                 .id(book.getId())
                 .title(book.getTitle())
@@ -39,6 +41,17 @@ public class AdminService extends UserService {
         bookRepository.save(bookModel);
         admin.addBook(book);
         return book;
+    }
+    public Book updateBook(String bookId, String title, String author, int stock, String url) {
+        final BookModel bookModel = bookRepository.findById(bookId).orElseThrow(() -> new UserNotFoundException("Book not found with id: " + bookId));
+        // set if the fields are present
+        bookModel.setTitle(title);
+        bookModel.setAuthor(author);
+        bookModel.setStock(stock);
+        bookModel.setUrl(url);
+
+        bookRepository.save(bookModel);
+        return new Book(bookId, title, author, stock, url);
     }
 
     private void validateAddBook(String userId, String title, String author, int stock) {

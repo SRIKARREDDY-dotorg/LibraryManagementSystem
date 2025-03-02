@@ -16,9 +16,9 @@ public class Book {
     private int stock;
     private final String id;
 
-    public Book(String title, String author, int stock, String url) {
+    public Book(String id, String title, String author, int stock, String url) {
         this.url = url;
-        this.id = IdGeneratorUtil.generateBookId();
+        this.id = id;
         this.title = title;
         this.author = author;
         this.stock = stock;
