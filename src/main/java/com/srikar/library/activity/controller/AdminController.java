@@ -34,12 +34,11 @@ public class AdminController extends UserController {
         return super.viewBooks();
     }
     @Override
-    @PostMapping("/{userId}/books/{bookId}/borrow")
+    @PostMapping("/borrow")
     public ResponseEntity<?> borrowBook(
-            @PathVariable String userId,
-            @PathVariable String bookId) {
+            @RequestBody BorrowRequest request) {
         // Add admin-specific logic here if needed
-        return super.borrowBook(userId, bookId);
+        return super.borrowBook(request);
     }
     @Override
     @PostMapping("/{userId}/books/return")

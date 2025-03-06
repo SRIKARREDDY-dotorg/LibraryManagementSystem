@@ -27,6 +27,10 @@ public abstract class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    static class BorrowRequest {
+        public String userId;
+        public String bookId;
+    }
     /**
      * View all books in library
      * @return
@@ -49,16 +53,13 @@ public abstract class UserController {
 
     /**
      * Borrow a book from the library
-     * @param userId
-     * @param bookId
      * @return
      */
-    @PostMapping("/{userId}/books/{bookId}/borrow")
+    @PostMapping("/borrow")
     public ResponseEntity<?> borrowBook(
-            @PathVariable String userId,
-            @PathVariable String bookId) {
+            @RequestBody BorrowRequest request) {
         try {
-            boolean borrowed = userService.borrowBook(userId, bookId);
+            boolean borrowed = userService.borrowBook(request.userId, request.bookId);
             if (borrowed) {
                 return ResponseEntity.ok("Book borrowed successfully");
             } else {
@@ -73,7 +74,7 @@ public abstract class UserController {
                     .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("An unexpected error occurred"));
+                    .body(new ErrorResponse(e.getMessage()));
         }
     }
     /**

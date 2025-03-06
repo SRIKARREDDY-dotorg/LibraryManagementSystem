@@ -2,7 +2,10 @@ package com.srikar.library.activity.service;
 
 import com.srikar.library.core.Book;
 import com.srikar.library.core.User;
+import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
+import com.srikar.library.dao.user.UserModel;
+import com.srikar.library.dao.user.UserRepository;
 import com.srikar.library.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,10 @@ public class UserService {
     protected final List<User> users;
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private UserRepository userRepository;
+    private static final int BORROW_LIMIT = 2;
+
 
     public UserService() {
         this.users = new ArrayList<>();
@@ -49,11 +56,34 @@ public class UserService {
      */
     public boolean borrowBook(String userId, String bookId) {
         validateBorrowBook(userId, bookId);
-        User user = findUserById(userId);
-        if (user != null) {
-            return user.borrowBook(bookId);
+        List<String> bookIds = userRepository.findById(userId).get().getBorrowedBooks();
+        if (bookIds == null) {
+            bookIds = new ArrayList<>();
         }
-        throw new UserNotFoundException("User not found with id: " + userId);
+        if(bookIds.size() >= BORROW_LIMIT) {
+            throw new IllegalStateException("You have already borrowed " + BORROW_LIMIT + " books. Please return one before borrowing another.");
+        }
+        if (bookIds.contains(bookId)) {
+            throw new IllegalStateException("You have already borrowed the book with ID: " + bookId);
+        }
+        BookModel bookModel = bookRepository.findById(bookId).orElse(null);
+        if (bookModel == null) {
+            throw new IllegalStateException("Book not found.");
+        }
+        if(bookModel.getStock() >= 1) {
+            bookModel.setStock(bookModel.getStock() - 1);
+            bookRepository.save(bookModel);
+        } else {
+            bookModel.setStock(0);
+            bookRepository.save(bookModel);
+            throw new IllegalStateException("Book is out of stock.");
+        }
+        bookIds.add(bookId);
+        userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
+        UserModel userModel = userRepository.findById(userId).orElse(null);
+        System.out.println("User had these books");
+        userModel.getBorrowedBooks().stream().forEach(System.out::println);
+        return true;
     }
 
     private void validateBorrowBook(String userId, String bookId) {
