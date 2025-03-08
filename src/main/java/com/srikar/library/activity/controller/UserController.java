@@ -8,7 +8,6 @@ import com.srikar.library.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -28,7 +27,6 @@ public abstract class UserController {
     private JwtUtil jwtUtil;
 
     static class BorrowRequest {
-        public String userId;
         public String bookId;
     }
     /**
@@ -59,7 +57,8 @@ public abstract class UserController {
     public ResponseEntity<?> borrowBook(
             @RequestBody BorrowRequest request) {
         try {
-            boolean borrowed = userService.borrowBook(request.userId, request.bookId);
+            String userId = jwtUtil.getAuthenticatedEmail();
+            boolean borrowed = userService.borrowBook(userId, request.bookId);
             if (borrowed) {
                 return ResponseEntity.ok("Book borrowed successfully");
             } else {
