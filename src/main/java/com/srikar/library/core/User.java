@@ -28,45 +28,6 @@ public class User {
     }
 
     /**
-     * Borrow a book from the library by its id
-     * @param bookId
-     * @return boolean
-     */
-    public boolean borrowBook(String bookId) {
-        if(borrowedBooks.size() >= BORROW_LIMIT) {
-            System.out.println("You have reached the borrowing limit.");
-            throw new IllegalStateException("You have reached the borrowing limit.");
-        }
-        final Book book = library.getBook(bookId);
-        return handleBorrowedBook(book);
-    }
-    private boolean handleBorrowedBook(Book book) {
-        // check if the same copy present in borrowed books
-        if (borrowedBooks.stream().anyMatch(b -> b.getId().equals(book.getId()))) {
-            System.out.println("You have already borrowed a copy of this book.");
-            throw new IllegalStateException("You have already borrowed a copy of this book.");
-        }
-        if (book == null) {
-            System.out.println("Book not found.");
-            throw new IllegalStateException("Book not found.");
-        }
-        if (book.getStock() > 1) {
-            book.setStock(book.getStock() - 1); // Reduce stock
-            library.addUser(this);
-        } else {
-            book.setStock(0);
-            library.removeBook(book.getId()); // Remove from library if last copy
-            library.addUser(this);
-        }
-        borrowedBooks.add(book);
-        System.out.println(book.getTitle() + " Book borrowed successfully.");
-        if(book.getStock() == 0) {
-            System.out.println(book.getTitle() + " Book is out of stock.");
-        }
-        return true;
-    }
-
-    /**
      * Return one or more books to the library
      * @param bookIds List of book IDs to be returned
      * @return boolean indicating success or failure

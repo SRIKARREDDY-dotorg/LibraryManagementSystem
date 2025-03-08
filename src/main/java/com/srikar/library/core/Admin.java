@@ -10,31 +10,6 @@ public class Admin extends User {
     }
 
     /**
-     * Add a book to the library
-     * @param book
-     */
-    public void addBook(Book book) {
-        library.addBook(book);
-        System.out.println("Book added: " + book.getTitle());
-    }
-
-    /**
-     * Check the inventory of the library
-     */
-    public List<Book> checkInventory() {
-        List<Book> books = library.viewBooks();
-        if (books.isEmpty()) {
-            System.out.println("Library is empty.");
-        } else {
-            System.out.println("Library Inventory:");
-            for (Book book : books) {
-                System.out.println(book);
-            }
-        }
-        return books;
-    }
-
-    /**
      * Check if any user has borrowed books
      */
     public List<Book> checkBorrowedBooks() {

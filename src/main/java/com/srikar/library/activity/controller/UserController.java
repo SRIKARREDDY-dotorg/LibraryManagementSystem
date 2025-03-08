@@ -78,16 +78,14 @@ public abstract class UserController {
     }
     /**
      * Return one or more books to the library
-     * @param userId
-     * @param bookIds
+     * @param request
      * @return
      */
-    @PostMapping("/{userId}/books/return")
-    public ResponseEntity<?> returnBooks(
-            @PathVariable String userId,
-            @RequestBody List<String> bookIds) {
+    @PostMapping("/return")
+    public ResponseEntity<?> returnBooks(@RequestBody BorrowRequest request) {
         try {
-            boolean returned = userService.returnBooks(userId, bookIds);
+            String userId = jwtUtil.getAuthenticatedEmail();
+            boolean returned = userService.returnBooks(userId, request.bookId);
             if (returned) {
                 return ResponseEntity.ok("Books returned successfully");
             } else {

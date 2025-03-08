@@ -39,7 +39,6 @@ public class AdminService extends UserService {
                 .url(book.getUrl())
                 .build();
         bookRepository.save(bookModel);
-        admin.addBook(book);
         return book;
     }
     public Book updateBook(String bookId, String title, String author, int stock, String url) {
@@ -52,21 +51,6 @@ public class AdminService extends UserService {
 
         bookRepository.save(bookModel);
         return new Book(bookId, title, author, stock, url);
-    }
-
-    private void validateAddBook(String userId, String title, String author, int stock) {
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
-        if (title == null || title.isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
-        }
-        if (author == null || author.isEmpty()) {
-            throw new IllegalArgumentException("Author cannot be null or empty");
-        }
-        if (stock < 1) {
-            throw new IllegalArgumentException("Stock must be greater than 0");
-        }
     }
 
     /**
@@ -84,26 +68,6 @@ public class AdminService extends UserService {
     }
 
     private void validateCheckBorrowedBooks(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
-    }
-
-    /**
-     * Check inventory
-     *
-     * @return
-     */
-    public List<Book> checkInventory(String userId) {
-        validateCheckInventory(userId);
-        Admin admin = (Admin) findUserById(userId);
-        if (admin == null) {
-            throw new UserNotFoundException("Admin not found");
-        }
-        return admin.checkInventory();
-    }
-
-    private void validateCheckInventory(String userId) {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }

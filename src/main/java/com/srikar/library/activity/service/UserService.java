@@ -98,23 +98,34 @@ public class UserService {
     /**
      * Return one or more books to the library
      * @param userId
-     * @param bookIds
+     * @param bookId
      * @return
      */
-    public boolean returnBooks(String userId, List<String> bookIds) {
-        validateReturnBooks(userId, bookIds);
-        User user = findUserById(userId);
-        if (user != null) {
-            return user.returnBooks(bookIds);
+    public boolean returnBooks(String userId, String bookId) {
+        validateReturnBooks(userId, bookId);
+        List<String> bookIds = userRepository.findById(userId).get().getBorrowedBooks();
+        if (bookIds == null) {
+            bookIds = new ArrayList<>();
         }
-        throw new UserNotFoundException("User not found with id: " + userId);
+        if(!bookIds.contains(bookId)) {
+            throw new IllegalStateException("You have not borrowed the book with ID: " + bookId);
+        }
+        bookIds.remove(bookId);
+        userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
+        BookModel bookModel = bookRepository.findById(bookId).orElse(null);
+        if (bookModel == null) {
+            throw new IllegalStateException("Book not found.");
+        }
+        bookModel.setStock(bookModel.getStock() + 1);
+        bookRepository.save(bookModel);
+        return true;
     }
 
-    private void validateReturnBooks(String userId, List<String> bookIds) {
+    private void validateReturnBooks(String userId, String bookId) {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
-        if (bookIds == null || bookIds.isEmpty()) {
+        if (bookId == null || bookId.isEmpty()) {
             throw new IllegalArgumentException("Book IDs cannot be null or empty");
         }
     }

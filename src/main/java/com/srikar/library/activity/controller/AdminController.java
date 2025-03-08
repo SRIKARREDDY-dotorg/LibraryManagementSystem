@@ -41,12 +41,11 @@ public class AdminController extends UserController {
         return super.borrowBook(request);
     }
     @Override
-    @PostMapping("/{userId}/books/return")
+    @PostMapping("/return")
     public ResponseEntity<?> returnBooks(
-            @PathVariable String userId,
-            @RequestBody List<String> bookIds) {
+            @RequestBody BorrowRequest request) {
         // Add admin-specific logic here if needed
-        return super.returnBooks(userId, bookIds);
+        return super.returnBooks(request);
     }
     @PostMapping("/add_book")
     public ResponseEntity<?> addBook(@RequestBody BookCreateRequest request) {
@@ -86,21 +85,7 @@ public class AdminController extends UserController {
                     .body(new ErrorResponse("An unexpected error occurred"));
         }
     }
-    @GetMapping("/{userId}/checkInventory")
-    public ResponseEntity<?> checkInventory(@PathVariable String userId) {
-        try{
-            return ResponseEntity.ok(adminService.checkInventory(userId));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("User not found"));
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("An unexpected error occurred"));
-        }
-    }
+
     @GetMapping("/{userId}/checkBorrowed")
     public ResponseEntity<?> checkBorrowed(@PathVariable String userId) {
         try{
