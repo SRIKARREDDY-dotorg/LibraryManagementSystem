@@ -61,6 +61,38 @@ export const Books = () => {
             setIsLoading(false);
         }
     }
+
+    const borrowBooks = async (bookId: string) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("No authentication token found");
+            }
+
+            const response = await fetch('http://localhost:8080/api/users/borrow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ 'bookId': bookId })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                setError(error.message);
+                return;
+            }
+            const data = await response.json();
+            setBooks(data);
+            setError(null);
+            alert("Book borrowed successfully");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+            setIsLoading(false);
+        }
+    }
     const filteredBooks = books.filter(book => {
         switch (filter) {
             case 'available':
@@ -143,21 +175,21 @@ export const Books = () => {
                                         {book.stock > 0 ? `${book.stock} available` : 'Out of stock'}
                                     </span>
                                 </div>
-                                {role === 'ADMIN' &&
-                                    <div className="book-actions">
-                                        <button
-                                            className="borrow-button"
-                                            disabled={book.stock === 0}
-                                        >
-                                            Borrow Book
-                                        </button>
-                                        <button
-                                            className="return-button"
-                                        >
-                                            Return Book
-                                        </button>
-                                    </div>
-                                }
+                                <div className="book-actions">
+                                    <button
+                                        className="borrow-button"
+                                        disabled={book.stock === 0}
+                                        onClick={() => borrowBooks(book.id)}
+                                    >
+                                        Borrow Book
+                                    </button>
+                                    <button
+                                        className="return-button"
+                                    >
+                                        Return Book
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     ))
