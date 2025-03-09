@@ -63,10 +63,11 @@ public class UserService {
         if(bookIds.size() >= BORROW_LIMIT) {
             throw new IllegalStateException("You have already borrowed " + BORROW_LIMIT + " books. Please return one before borrowing another.");
         }
-        if (bookIds.contains(bookId)) {
-            throw new IllegalStateException("You have already borrowed the book with ID: " + bookId);
-        }
         BookModel bookModel = bookRepository.findById(bookId).orElse(null);
+
+        if (bookIds.contains(bookId)) {
+            throw new IllegalStateException("You have already borrowed the book: " + bookModel.getTitle());
+        }
         if (bookModel == null) {
             throw new IllegalStateException("Book not found.");
         }
@@ -80,9 +81,6 @@ public class UserService {
         }
         bookIds.add(bookId);
         userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
-        UserModel userModel = userRepository.findById(userId).orElse(null);
-        System.out.println("User had these books");
-        userModel.getBorrowedBooks().stream().forEach(System.out::println);
         return true;
     }
 
@@ -107,12 +105,12 @@ public class UserService {
         if (bookIds == null) {
             bookIds = new ArrayList<>();
         }
+        BookModel bookModel = bookRepository.findById(bookId).orElse(null);
         if(!bookIds.contains(bookId)) {
-            throw new IllegalStateException("You have not borrowed the book with ID: " + bookId);
+            throw new IllegalStateException("You have not borrowed the book: " + bookModel.getTitle());
         }
         bookIds.remove(bookId);
         userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
-        BookModel bookModel = bookRepository.findById(bookId).orElse(null);
         if (bookModel == null) {
             throw new IllegalStateException("Book not found.");
         }

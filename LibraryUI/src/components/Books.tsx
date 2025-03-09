@@ -120,7 +120,7 @@ export const Books = () => {
                 toast.error(error.message);
                 return;
             }
-            toast.success("Book borrowed successfully! 📚");
+            toast.success("Book returned successfully! 📚");
             setBooks(prevBooks =>
                 prevBooks.map(book =>
                     book.id === bookId ? { ...book, stock: book.stock + 1 } : book
