@@ -6,22 +6,26 @@ import {Layout} from "./components/Layout.tsx";
 import {Books} from "./components/Books.tsx";
 import {Book} from "./components/Book.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
+import { ToastContainer } from 'react-toastify';
 
 export default function LibraryApp() {
     return (
-        <AuthProvider>
-            <Router>
-                <Routes>
-                    <Route element={<Layout />}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Register />} />
-                        <Route path="/books" element={<Books />} />
-                        <Route path="/add_book" element={<Book />}/>
-                        {/* Add more routes as needed */}
-                    </Route>
-                </Routes>
-            </Router>
-        </AuthProvider>
+        <>
+            <ToastContainer position="top-right" autoClose={3000} aria-label={undefined} />
+            <AuthProvider>
+                <Router>
+                    <Routes>
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Register />} />
+                            <Route path="/books" element={<Books />} />
+                            <Route path="/add_book" element={<Book />}/>
+                            {/* Add more routes as needed */}
+                        </Route>
+                    </Routes>
+                </Router>
+            </AuthProvider>
+        </>
     );
 }

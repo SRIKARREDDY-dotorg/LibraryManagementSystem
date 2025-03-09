@@ -2,6 +2,7 @@ import "../styles/Books.css"
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
+import { toast } from 'react-toastify';
 
 interface Book {
     id: string;
@@ -17,6 +18,7 @@ export const Books = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
+    const [loadingBookId, setLoadingBookId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
@@ -68,7 +70,7 @@ export const Books = () => {
             if (!token) {
                 throw new Error("No authentication token found");
             }
-
+            setLoadingBookId(bookId);
             const response = await fetch('http://localhost:8080/api/users/borrow', {
                 method: 'POST',
                 headers: {
@@ -80,16 +82,55 @@ export const Books = () => {
 
             if (!response.ok) {
                 const error = await response.json();
-                setError(error.message);
+                toast.error(error.message);
                 return;
             }
-            const data = await response.json();
-            setBooks(data);
-            setError(null);
-            alert("Book borrowed successfully");
+            toast.success("Book borrowed successfully! 📚");
+            setBooks(prevBooks =>
+                prevBooks.map(book =>
+                    book.id === bookId ? { ...book, stock: book.stock - 1 } : book
+                )
+            );
         } catch (err) {
+            setLoadingBookId(null);
+            toast.error(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+            setLoadingBookId(null);
+            setIsLoading(false);
+        }
+    }
+    const returnBooks = async (bookId: string) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("No authentication token found");
+            }
+            setLoadingBookId(bookId);
+            const response = await fetch('http://localhost:8080/api/users/return', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ 'bookId': bookId })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                toast.error(error.message);
+                return;
+            }
+            toast.success("Book borrowed successfully! 📚");
+            setBooks(prevBooks =>
+                prevBooks.map(book =>
+                    book.id === bookId ? { ...book, stock: book.stock + 1 } : book
+                )
+            );
+        } catch (err) {
+            setLoadingBookId(null);
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
+            setLoadingBookId(null);
             setIsLoading(false);
         }
     }
@@ -181,12 +222,13 @@ export const Books = () => {
                                         disabled={book.stock === 0}
                                         onClick={() => borrowBooks(book.id)}
                                     >
-                                        Borrow Book
+                                        {loadingBookId === book.id ? 'Borrowing...' : 'Borrow'}
                                     </button>
                                     <button
                                         className="return-button"
+                                        onClick={() => returnBooks(book.id)}
                                     >
-                                        Return Book
+                                        {loadingBookId === book.id ? 'Returning...' : 'Return Book'}
                                     </button>
                                 </div>
 
