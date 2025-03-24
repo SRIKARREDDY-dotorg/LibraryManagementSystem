@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import { toast } from 'react-toastify';
+import {CommonConstants} from "../CommonConstants.ts";
 
 interface Book {
     id: string;
@@ -43,7 +44,7 @@ export const Books = () => {
                 throw new Error("No authentication token found");
             }
 
-            const response = await fetch('http://localhost:8080/api/users/books', {
+            const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/books`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export const Books = () => {
                 throw new Error("No authentication token found");
             }
             setLoadingBookId(bookId);
-            const response = await fetch('http://localhost:8080/api/users/borrow', {
+            const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/borrow`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ export const Books = () => {
                 throw new Error("No authentication token found");
             }
             setLoadingBookId(bookId);
-            const response = await fetch('http://localhost:8080/api/users/return', {
+            const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/return`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

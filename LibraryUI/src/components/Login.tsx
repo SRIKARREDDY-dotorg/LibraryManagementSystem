@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import {useAuth} from "../context/AuthContext.tsx";
+import {CommonConstants} from "../CommonConstants.ts";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export const Login = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axios.post(`${CommonConstants.BACKEND_END_POINT}/api/auth/login`, {
                 email,
                 password,
             });

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Book.css';
 import {useAuth} from "../context/AuthContext.tsx";
+import {CommonConstants} from "../CommonConstants.ts";
 
 interface BookFormData {
     title: string;
@@ -65,7 +66,7 @@ export const Book = () => {
                 throw new Error("No authentication token found");
             }
             try {
-                const response = await fetch('http://localhost:8080/api/users/add_book', {
+                const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/add_book`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

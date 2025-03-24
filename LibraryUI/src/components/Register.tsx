@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Register.css";
+import {CommonConstants} from "../CommonConstants.ts";
 
 export const Register = () => {
     const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export const Register = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:8080/api/auth/register", { email, password });
+            await axios.post(`${CommonConstants.BACKEND_END_POINT}/api/auth/register`, { email, password });
             setMessage("Registration successful! Redirecting...");
             setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
