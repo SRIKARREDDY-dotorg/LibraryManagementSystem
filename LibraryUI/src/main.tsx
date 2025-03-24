@@ -8,4 +8,5 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
+// @ts-ignore
 document.getElementById("root").style.height = "100vh";
