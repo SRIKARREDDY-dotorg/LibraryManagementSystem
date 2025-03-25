@@ -17,6 +17,9 @@ export const Book = () => {
         url: ''
     });
     const { role, isAuthenticated } = useAuth();
+    
+    const [errors, setErrors] = useState<Partial<BookFormData>>({});
+
     if (!isAuthenticated || role !== 'ADMIN') {
         return (
             <div className="unauthorized-container">
@@ -24,8 +27,6 @@ export const Book = () => {
             </div>
         );
     }
-    const [errors, setErrors] = useState<Partial<BookFormData>>({});
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prevState => ({

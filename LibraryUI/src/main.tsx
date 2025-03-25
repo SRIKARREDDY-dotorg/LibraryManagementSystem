@@ -7,6 +7,3 @@ createRoot(document.getElementById('root')!).render(
       <LibraryApp/>
   </StrictMode>,
 )
-
-// @ts-ignore
-document.getElementById("root").style.height = "100vh";

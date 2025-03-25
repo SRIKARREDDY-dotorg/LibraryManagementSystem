@@ -25,6 +25,12 @@ export const Books = () => {
     const navigate = useNavigate();
 
     const { role, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        fetchBooks();
+    }, []);
+    // Static book list
+    
     if (!isAuthenticated) {
         return (
             <div className="unauthorized-container">
@@ -32,11 +38,6 @@ export const Books = () => {
             </div>
         );
     }
-
-    useEffect(() => {
-        fetchBooks();
-    }, []);
-    // Static book list
     const fetchBooks = async () => {
         try {
             const token = localStorage.getItem("token");

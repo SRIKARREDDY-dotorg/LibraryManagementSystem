@@ -3,34 +3,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #1e293b;
     height: 100vh;
-    background: url("https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYm5vaHNuemZ4dHRoNXE5emxjYWJtOTl2dWplNXM4cnVuanQ3NmFhYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3osxYeLtSKwjXs8zU4/giphy.gif") center/cover no-repeat;
-    animation: fadeIn 2s ease-in-out;
-}
-
-/* Optional: Fade-in effect */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 }
 
 /* Card Styling */
 .library-card {
-    background: white;
+    background: #bed8f3;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Stronger shadow */
     text-align: center;
     width: 320px;
 }
 
 .library-title {
     font-size: 1.8rem;
-    color: #333;
+    font-weight: 500; /* Slightly bolder */
+    color: #1e293b; /* Dark navy */
     margin-bottom: 1.5rem;
 }
 
@@ -61,16 +51,16 @@
 }
 
 .login-button-home {
-    background: #3b82f6;
+    background: #2563eb;
     color: white;
 }
 
 .signup-button-home {
-    background: #10b981;
+    background: #059669; /* Premium teal */
     color: white;
 }
 
 .auth-button:hover {
     opacity: 0.85;
-    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
 }
