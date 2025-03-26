@@ -15,18 +15,20 @@ export default function LibraryApp() {
         <>
             <Header/>
             <ToastContainer position="top-right" autoClose={3000} aria-label={undefined} />
-            <AuthProvider>
-                <Router>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Register />} />
-                        <Route path="/books" element={<Books />} />
-                        <Route path="/add_book" element={<Book />}/>
-                        {/* Add more routes as needed */}
-                    </Routes>
-                </Router>
-            </AuthProvider>
+            <div className="app-container">
+                <AuthProvider>
+                    <Router>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Register />} />
+                            <Route path="/books" element={<Books />} />
+                            <Route path="/add_book" element={<Book />}/>
+                            {/* Add more routes as needed */}
+                        </Routes>
+                    </Router>
+                </AuthProvider>
+            </div>
             <Footer/>
         </>
     );
