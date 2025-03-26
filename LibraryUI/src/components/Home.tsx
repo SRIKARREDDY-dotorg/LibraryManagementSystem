@@ -5,7 +5,7 @@ export const Home = () => {
     return (
         <section className="library-container">
             <div className="library-card">
-                <h1 className="library-title">📚 Welcome to LMS!</h1>
+                <h1 className="library-title">Welcome to LMS!</h1>
                 <nav className="nav-container">
                     <div className="auth-buttons">
                         <Link to="/login" className="auth-button login-button-home">
