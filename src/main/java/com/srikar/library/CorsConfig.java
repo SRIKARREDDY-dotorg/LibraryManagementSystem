@@ -13,8 +13,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173") // Change to your React frontend URL
-                        .allowedOrigins("https://librarymanagementsystem-j2nx.onrender.com/")
+                        .allowedOrigins(
+                                "http://localhost:5173",
+                                "https://librarymanagementsystem-j2nx.onrender.com"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);

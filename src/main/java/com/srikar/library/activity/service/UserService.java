@@ -7,6 +7,7 @@ import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.dao.user.UserModel;
 import com.srikar.library.dao.user.UserRepository;
 import com.srikar.library.exception.UserNotFoundException;
+import com.srikar.library.queue.EmailProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class UserService {
     private BookRepository bookRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailProducer emailProducer;
+
     private static final int BORROW_LIMIT = 2;
 
 
@@ -81,6 +85,10 @@ public class UserService {
         }
         bookIds.add(bookId);
         userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
+        String subject = "📚 Book Borrowed: " + bookModel.getTitle();
+        String body = "Dear User,<br><br>You have successfully borrowed <b>" + bookModel.getTitle() + "</b>. <br>Enjoy your reading! 📖<br><br>Regards,<br>Library Team";
+
+        emailProducer.sendEmailToQueue(userId, subject, body);
         return true;
     }
 
@@ -116,6 +124,10 @@ public class UserService {
         }
         bookModel.setStock(bookModel.getStock() + 1);
         bookRepository.save(bookModel);
+        String subject = "📚 Book Returned: " + bookModel.getTitle();
+        String body = "Dear User,<br><br>You have successfully returned <b>" + bookModel.getTitle() + "</b>. <br>Thank you! 📖<br><br>Regards,<br>Library Team";
+
+        emailProducer.sendEmailToQueue(userId, subject, body);
         return true;
     }
 
