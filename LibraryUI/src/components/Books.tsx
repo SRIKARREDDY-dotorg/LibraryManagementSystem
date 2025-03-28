@@ -19,7 +19,6 @@ export const Books = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
-    const [loadingBookId, setLoadingBookId] = useState<string | null>(null);
     const [borrowLoading, setBorrowLoading] = useState<string | null>(null);
     const [returnLoading, setReturnLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
