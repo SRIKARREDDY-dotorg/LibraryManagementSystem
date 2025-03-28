@@ -13,6 +13,7 @@ RUN mkdir -p /etc/supervisor/conf.d
 
 # Copy the built JAR file
 COPY target/*.jar app.jar
+COPY .env .env
 # Copy the Supervisor config
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
