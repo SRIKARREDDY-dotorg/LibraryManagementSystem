@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f5f7f9;
+    background-color: #7c8792;
     height: 100vh;
 }
 
@@ -15,6 +15,7 @@
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15); /* Stronger shadow */
     text-align: center;
     width: 320px;
+    animation: fadeIn 0.4s ease-in-out;
 }
 
 .library-title {
@@ -64,4 +65,16 @@
 .auth-button:hover {
     opacity: 0.85;
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.15);
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -20,6 +20,8 @@ export const Books = () => {
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
     const [loadingBookId, setLoadingBookId] = useState<string | null>(null);
+    const [borrowLoading, setBorrowLoading] = useState<string | null>(null);
+    const [returnLoading, setReturnLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
@@ -72,7 +74,7 @@ export const Books = () => {
             if (!token) {
                 throw new Error("No authentication token found");
             }
-            setLoadingBookId(bookId);
+            setBorrowLoading(bookId);
             const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/borrow`, {
                 method: 'POST',
                 headers: {
@@ -94,10 +96,10 @@ export const Books = () => {
                 )
             );
         } catch (err) {
-            setLoadingBookId(null);
+            setBorrowLoading(null);
             toast.error(err instanceof Error ? err.message : 'An error occurred');
         } finally {
-            setLoadingBookId(null);
+            setBorrowLoading(null);
             setIsLoading(false);
         }
     }
@@ -107,7 +109,7 @@ export const Books = () => {
             if (!token) {
                 throw new Error("No authentication token found");
             }
-            setLoadingBookId(bookId);
+            setReturnLoading(bookId);
             const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/return`, {
                 method: 'POST',
                 headers: {
@@ -129,10 +131,10 @@ export const Books = () => {
                 )
             );
         } catch (err) {
-            setLoadingBookId(null);
+            setReturnLoading(null);
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
-            setLoadingBookId(null);
+            setReturnLoading(null);
             setIsLoading(false);
         }
     }
@@ -224,13 +226,13 @@ export const Books = () => {
                                         disabled={book.stock === 0}
                                         onClick={() => borrowBooks(book.id)}
                                     >
-                                        {loadingBookId === book.id ? 'Borrowing...' : 'Borrow'}
+                                        {borrowLoading === book.id ? 'Borrowing...' : 'Borrow'}
                                     </button>
                                     <button
                                         className="return-button"
                                         onClick={() => returnBooks(book.id)}
                                     >
-                                        {loadingBookId === book.id ? 'Returning...' : 'Return Book'}
+                                        {returnLoading === book.id ? 'Returning...' : 'Return Book'}
                                     </button>
                                 </div>
 

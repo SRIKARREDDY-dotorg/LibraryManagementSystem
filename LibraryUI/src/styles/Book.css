@@ -1,9 +1,9 @@
 /* Book.css */
 .add-book-form-container {
     width: 35%;
-    margin: 5rem auto;
+    margin: 8rem auto;
     padding: 50px;
-    background-color: #fff;
+    background-color: #dddada;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

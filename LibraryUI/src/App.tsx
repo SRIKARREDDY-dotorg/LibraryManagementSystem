@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import './App.css';
 import { Header } from "./components/Header.tsx";
 import { Footer } from "./components/Footer.tsx";
+import ScrollToTop from "./ScrollToTop.tsx";
 
 export default function LibraryApp() {
     return (
@@ -18,6 +19,7 @@ export default function LibraryApp() {
             <div className="app-container">
                 <AuthProvider>
                     <Router>
+                        <ScrollToTop />
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/login" element={<Login />} />

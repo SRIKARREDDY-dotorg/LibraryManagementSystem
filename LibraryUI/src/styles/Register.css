@@ -11,9 +11,10 @@
     background: white;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     width: 350px;
     text-align: center;
+    animation: fadeIn 0.4s ease-in-out;
 }
 
 .register-card h2 {
@@ -44,16 +45,39 @@
     color: gray;
 }
 
+.register-spinner {
+    width: 25px;
+    height: 25px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #28a745;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+    display: flex;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 /* Button */
 .register-button {
-    width: 100%;
+    padding: 10px 20px;
+    width: 40%;
     padding: 10px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 28px;
     font-size: 16px;
     cursor: pointer;
+    max-height: 50px;
+    min-height: 50px;
+    max-width: 50%;
+}
+
+/* Disable state */
+.register-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .register-button:hover {
@@ -79,4 +103,16 @@
 
 .register-small-text a:hover {
     text-decoration: underline;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
