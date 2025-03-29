@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import { toast } from 'react-toastify';
 import {CommonConstants} from "../CommonConstants.ts";
+import { Unauthorised } from "./Unauthorised.tsx";
 
 interface Book {
     id: string;
@@ -28,17 +29,18 @@ export const Books = () => {
     const { role, isAuthenticated } = useAuth();
 
     useEffect(() => {
-        fetchBooks();
-    }, []);
+        if(isAuthenticated) {
+            fetchBooks();
+        }
+    }, [isAuthenticated]);
     // Static book list
     
     if (!isAuthenticated) {
         return (
-            <div className="unauthorized-container">
-                <p className="unauthorized-message">You are not authorized to view this page.</p>
-            </div>
+            <Unauthorised/>
         );
     }
+    
     const fetchBooks = async () => {
         try {
             const token = localStorage.getItem("token");

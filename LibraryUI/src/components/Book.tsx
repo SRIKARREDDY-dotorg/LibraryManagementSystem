@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../styles/Book.css';
 import {useAuth} from "../context/AuthContext.tsx";
 import {CommonConstants} from "../CommonConstants.ts";
+import { Unauthorised } from './Unauthorised.tsx';
 
 interface BookFormData {
     title: string;
@@ -22,9 +23,7 @@ export const Book = () => {
 
     if (!isAuthenticated || role !== 'ADMIN') {
         return (
-            <div className="unauthorized-container">
-                <p className="unauthorized-message">You are not authorized to view this page.</p>
-            </div>
+            <Unauthorised/>
         );
     }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

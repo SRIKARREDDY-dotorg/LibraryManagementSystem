@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
@@ -11,8 +11,13 @@ export const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { setRole } = useAuth();
+    const { setRole, isAuthenticated } = useAuth();
 
+    useEffect(() => {
+        if(isAuthenticated) {
+            navigate("/books");
+        }
+    });
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
