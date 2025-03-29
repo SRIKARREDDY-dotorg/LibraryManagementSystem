@@ -1,8 +1,9 @@
-package com.srikar.library.core;
+package com.srikar.library.dto;
 
-import com.srikar.library.util.IdGeneratorUtil;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * Book class representing a book entity
@@ -14,6 +15,12 @@ public class Book {
     @Getter
     @Setter
     private int stock;
+    @Getter
+    @Setter
+    private String borrowerId;
+    @Getter
+    @Setter
+    private Date dueDate;
     private final String id;
 
     public Book(String id, String title, String author, int stock, String url) {

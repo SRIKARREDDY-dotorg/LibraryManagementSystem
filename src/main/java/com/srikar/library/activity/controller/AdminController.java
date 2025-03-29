@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,10 +85,14 @@ public class AdminController extends UserController {
         }
     }
 
-    @GetMapping("/{userId}/checkBorrowed")
-    public ResponseEntity<?> checkBorrowed(@PathVariable String userId) {
+    @GetMapping("/checkBorrowed")
+    public ResponseEntity<?> checkBorrowed() {
+        if (!isAdmin()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse("Access denied"));
+        }
         try{
-            return ResponseEntity.ok(adminService.checkBorrowedBooks(userId));
+            return ResponseEntity.ok(adminService.checkBorrowedBooks());
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("User not found"));

@@ -1,25 +1,26 @@
 package com.srikar.library.activity.service;
 
-import com.srikar.library.core.Admin;
-import com.srikar.library.core.Book;
+import com.srikar.library.dao.user.UserModel;
+import com.srikar.library.dao.user.UserRepository;
+import com.srikar.library.dto.Book;
 import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.util.IdGeneratorUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AdminService extends UserService {
-    private final Admin admin;
     private final BookRepository bookRepository;
-    public AdminService(BookRepository bookRepository) {
+    private final UserRepository userRepository;
+
+    public AdminService(BookRepository bookRepository, UserRepository userRepository) {
         super();
         this.bookRepository = bookRepository;
-        admin = new Admin("admin", "admin@example.com");
-        System.out.println(admin);
-        users.add(admin);
+        this.userRepository = userRepository;
     }
 
     /**
@@ -58,18 +59,25 @@ public class AdminService extends UserService {
      *
      * @return
      */
-    public List<Book> checkBorrowedBooks(String userId) {
-        validateCheckBorrowedBooks(userId);
-        Admin admin = (Admin) findUserById(userId);
-        if (admin == null) {
-            throw new UserNotFoundException("Admin not found with id: " + userId);
+    public List<Book> checkBorrowedBooks() {
+        final List<UserModel> users = userRepository.findAll();
+        final List<Book> books = new ArrayList<>();
+        if (users != null) {
+            for (UserModel user : users) {
+                if (user.getBorrowedBooks() != null) {
+                    List<Book> borrowedBooks = user.getBorrowedBooks().stream()
+                            .map(bookId -> bookRepository.findById(bookId).orElse(null))
+                            .map(bookModel -> {
+                                Book book = new Book(bookModel.getId(), bookModel.getTitle(), bookModel.getAuthor(), bookModel.getStock(), bookModel.getUrl());
+                                book.setBorrowerId(user.getEmail());
+                                book.setDueDate(bookModel.getDueDate());
+                                return book;
+                            })
+                            .toList();
+                    books.addAll(borrowedBooks);
+                }
+            }
         }
-        return admin.checkBorrowedBooks();
-    }
-
-    private void validateCheckBorrowedBooks(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
+        return books;
     }
 }

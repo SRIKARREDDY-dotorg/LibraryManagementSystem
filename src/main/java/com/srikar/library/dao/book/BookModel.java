@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Document(collection = "books")
 @Builder
 @Data
@@ -19,4 +21,5 @@ public class BookModel {
     private String author;
     private int stock;
     private String url;
+    private Date dueDate;
 }

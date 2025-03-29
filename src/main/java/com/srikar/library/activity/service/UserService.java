@@ -1,17 +1,16 @@
 package com.srikar.library.activity.service;
 
-import com.srikar.library.core.Book;
-import com.srikar.library.core.User;
+import com.srikar.library.dto.Book;
 import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.dao.user.UserModel;
 import com.srikar.library.dao.user.UserRepository;
-import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.queue.EmailProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +18,6 @@ import java.util.List;
  */
 @Service
 public class UserService {
-    protected final List<User> users;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
@@ -31,7 +29,6 @@ public class UserService {
 
 
     public UserService() {
-        this.users = new ArrayList<>();
     }
 
     /**
@@ -75,13 +72,14 @@ public class UserService {
         if (bookModel == null) {
             throw new IllegalStateException("Book not found.");
         }
+        final Date dueDate = new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
+        bookModel.setDueDate(dueDate);
         if(bookModel.getStock() >= 1) {
             bookModel.setStock(bookModel.getStock() - 1);
             bookRepository.save(bookModel);
         } else {
             bookModel.setStock(0);
             bookRepository.save(bookModel);
-            throw new IllegalStateException("Book is out of stock.");
         }
         bookIds.add(bookId);
         userRepository.save(new UserModel(userId, userRepository.findById(userId).get().getPassword(), bookIds));
@@ -138,9 +136,5 @@ public class UserService {
         if (bookId == null || bookId.isEmpty()) {
             throw new IllegalArgumentException("Book IDs cannot be null or empty");
         }
-    }
-
-    protected User findUserById(String userId) {
-        return users.stream().filter(user -> user.getId().equals(userId)).findFirst().orElse(null);
     }
 }
