@@ -40,11 +40,11 @@ export const Header = () => {
                 alignItems: 'center',
                 padding: '1rem',
                 transition: 'background 0.3s ease-in-out',
-                maxWidth: '350px',
+                maxWidth: 'fit-content',
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d2d2d2'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                📚 Library Management System
+                📚 LMS
             </Link>
             {/* Profile Icon */}
             {isAuthenticated ? (
