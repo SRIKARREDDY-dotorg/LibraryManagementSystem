@@ -16,12 +16,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return localStorage.getItem('role');
     });
 
-    const isAuthenticated = !!role;
+    let isAuthenticated = !!role;
 
     const logout = () => {
         localStorage.removeItem('role');
         localStorage.removeItem('token');
         setRole(null);
+        isAuthenticated = false;
     };
 
     // Update localStorage when role changes

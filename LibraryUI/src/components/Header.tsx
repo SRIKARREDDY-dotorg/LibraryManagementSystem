@@ -1,8 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 export const Header = () => {
-    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+    const { isAuthenticated, logout } = useAuth();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+    const closeDropdown = () => {
+        setDropdownOpen(false);
+    };
+
     return (
         <div style={{
             backgroundColor: '#ffffff', 
@@ -60,41 +71,100 @@ export const Header = () => {
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                         📖 Books
                     </Link>
-                    <Link to="/profile" style={{
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '20%',
-                        backgroundColor: '#ddd', // Placeholder background
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        marginRight: '10px',
-                        transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.1)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = 'none';
-                    }}>
-                        <img 
-                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=guest`} 
-                            alt="Profile" 
-                            style={{ width: '100%', height: '100%' }}
-                        />
-                    </Link>
+                    <div style={{ position: 'relative' }}>
+                        <div 
+                            style={{
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '20%',
+                                backgroundColor: '#ddd',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                marginRight: '10px',
+                                transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.1)';
+                                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                            onClick={toggleDropdown}
+                        >
+                            <img 
+                                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=guest`} 
+                                alt="Profile" 
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                        </div>
+                        {/* Dropdown Menu */}
+                        {dropdownOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '60px',
+                                right: 0,
+                                backgroundColor: '#fff',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                                borderRadius: '8px',
+                                overflow: 'hidden',
+                                width: '150px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}>
+                                <Link 
+                                    to="/profile" 
+                                    style={{
+                                        padding: '10px',
+                                        textAlign: 'center',
+                                        textDecoration: 'none',
+                                        color: '#000',
+                                        transition: 'background 0.3s ease-in-out',
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                    onClick={closeDropdown}
+                                >
+                                    Profile
+                                </Link>
+                                <button 
+                                    style={{
+                                        padding: '10px',
+                                        textAlign: 'center',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: '#000',
+                                        transition: 'background 0.3s ease-in-out',
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                    onClick={() => {
+                                        closeDropdown();
+                                        logout();
+                                        navigate('/login');
+                                        console.log("Logout clicked");
+                                    }}
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             ) : (
-                <Link to="/signup" style={{
+                <Link to="/login" style={{
                     fontSize: '20px',
                     fontWeight: '100',
                     fontFamily: '"Inter", sans-serif',
                     textDecoration: 'wavy',
                     color: '#000',
                     padding: '1rem',
+                    marginRight: '3px',
+                    borderRadius: '8px',
                     transition: 'background 0.3s ease-in-out',
                     maxWidth: '150px',
                 }}
@@ -106,7 +176,7 @@ export const Header = () => {
                     e.currentTarget.style.backgroundColor = 'transparent'
                     e.currentTarget.style.color = '#000'
                     }}>
-                    Register
+                    SignIn
                 </Link>
             )}
         </div>
