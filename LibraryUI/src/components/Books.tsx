@@ -1,5 +1,5 @@
 import "../styles/Books.css"
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import { toast } from 'react-toastify';
@@ -20,28 +20,16 @@ export const Books = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
+    const sessionExpiredRef = useRef(false);
     const [borrowLoading, setBorrowLoading] = useState<string | null>(null);
     const [returnLoading, setReturnLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
-    const { role, isAuthenticated } = useAuth();
-
-    useEffect(() => {
-        if(isAuthenticated) {
-            fetchBooks();
-        }
-    }, [isAuthenticated]);
-    // Static book list
+    const { role, isAuthenticated, logout } = useAuth();
     
-    if (!isAuthenticated) {
-        return (
-            <Unauthorised/>
-        );
-    }
-    
-    const fetchBooks = async () => {
+    const fetchBooks = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -57,6 +45,13 @@ export const Books = () => {
             });
 
             if (!response.ok) {
+                const error = await response.json();
+                if ((error.status === 403 || error.status === 401) && !sessionExpiredRef.current) {
+                    sessionExpiredRef.current = true;
+                    toast.error("Session expired. Please log in again.");
+                    logout();
+                    return;
+                }
                 throw new Error('Failed to fetch books');
             }
             const data = await response.json();
@@ -67,7 +62,7 @@ export const Books = () => {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [logout]);
 
     const borrowBooks = async (bookId: string) => {
         try {
@@ -149,6 +144,19 @@ export const Books = () => {
                 return true;
         }
     });
+
+    useEffect(() => {
+        if (isAuthenticated && !sessionExpiredRef.current) {
+            fetchBooks();
+        }
+    }, [fetchBooks, isAuthenticated]);
+    // Static book list
+    
+    if (!isAuthenticated || sessionExpiredRef.current) {
+        return (
+            <Unauthorised/>
+        );
+    }
 
     if (isLoading) {
         return (
