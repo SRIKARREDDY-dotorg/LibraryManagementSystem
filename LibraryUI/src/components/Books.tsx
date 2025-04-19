@@ -18,6 +18,9 @@ type FilterType = 'all' | 'available' | 'out-of-stock';
 
 export const Books = () => {
     const [books, setBooks] = useState<Book[]>([]);
+    const [masterBooks, setMasterBooks] = useState<Book[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
     const sessionExpiredRef = useRef(false);
@@ -56,6 +59,7 @@ export const Books = () => {
             }
             const data = await response.json();
             setBooks(data);
+            setMasterBooks(data);
             setError(null);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
@@ -146,6 +150,27 @@ export const Books = () => {
     });
 
     useEffect(() => {
+        const searchTerm = searchQuery.toLowerCase();
+    
+        const filtered = masterBooks.filter((book) => {
+            const matchesSearch =
+                book.title.toLowerCase().includes(searchTerm) ||
+                book.author.toLowerCase().includes(searchTerm);
+    
+            switch (filter) {
+                case 'available':
+                    return matchesSearch && book.stock > 0;
+                case 'out-of-stock':
+                    return matchesSearch && book.stock === 0;
+                default:
+                    return matchesSearch;
+            }
+        });
+    
+        setBooks(filtered);
+    }, [searchQuery, filter, masterBooks]);
+    
+    useEffect(() => {
         if (isAuthenticated && !sessionExpiredRef.current) {
             fetchBooks();
         }
@@ -206,6 +231,17 @@ export const Books = () => {
                         <button className="add-book-button" onClick={() => navigate('/add_book')}> + Add Book</button>
                     </div>
                 )}
+                <div className="search-container">
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder={isSearchFocused ? '' : '🔍  Search by title or author'}
+                        value={searchQuery}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
             </div>
             <div className="books-grid">
                 {filteredBooks.length > 0 ? (
