@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {CommonConstants} from "../CommonConstants.ts";
 import "../styles/BorrowedBooks.css";
 import {useAuth} from "../context/AuthContext.tsx";
@@ -39,7 +39,7 @@ export const BorrowedBooks = () => {
             const data = await response.json();
             setBooks(data);
             console.log("Borrowed books:", data);
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message);
             console.error('Error fetching borrowed books:', error);
         } finally {
