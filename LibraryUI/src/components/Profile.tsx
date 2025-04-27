@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import {useRef, useState} from 'react';
 import '../styles/Profile.css';
 import { toast } from 'react-toastify';
+import {useAuth} from "../context/AuthContext.tsx";
+import {BorrowedBooks} from "./BorrowedBooks.tsx";
 
 export const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
-    const [email, setEmail] = useState('user@example.com');
-    const [password, setPassword] = useState('secret123');
+    const {email, password} = useAuth();
+    const currentEmail = useRef(email);
+    const currentPassword = useRef(password);
     const [message, setMessage] = useState('');
     
     const handleUpdate = () => {
         // Simulate an update operation
         setMessage('Profile updated successfully!');
+        // console.log('Current email' + currentEmail.current);
+        // console.log('Current password' + currentPassword.current);
+        // setEmail(currentEmail.current);
+        // setPassword(currentPassword.current);
         setTimeout(() => setMessage(''), 3000); // Clear after 3s
     };
     const handleSignout = () => {
@@ -33,6 +40,12 @@ export const Profile = () => {
                     >
                         Dashboard
                     </li>
+                    <li
+                        className={`menu-item ${activeTab === 'borrowed_books' ? 'active': ''}`}
+                        onClick={() => setActiveTab('borrowed_books')}
+                    >
+                        Borrowed Books
+                    </li>
                 </ul>
             </div>
 
@@ -45,16 +58,20 @@ export const Profile = () => {
                             Email:
                             <input 
                                 type="email" 
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
+                                value={email}
+                                onChange={(e) => {
+                                    currentEmail.current = e.target.value
+                                }}
                             />
                         </label>
                         <label>
                             Password:
                             <input 
                                 type="password" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
+                                value={password}
+                                onChange={(e) => {
+                                    currentPassword.current = e.target.value
+                                }}
                             />
                         </label>
                         <div className="button-group">
@@ -72,6 +89,7 @@ export const Profile = () => {
                         <p>More features coming soon!</p>
                     </div>
                 )}
+                {activeTab === 'borrowed_books' && <BorrowedBooks/>}
             </div>
         </div>
     );

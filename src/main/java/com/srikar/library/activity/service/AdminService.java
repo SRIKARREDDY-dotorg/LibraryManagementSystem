@@ -70,7 +70,12 @@ public class AdminService extends UserService {
             }
             return user.getBorrowedBooks().stream()
                     .map(bookId -> bookRepository.findById(bookId).orElse(null))
-                    .map(bookModel -> new Book(bookModel.getId(), bookModel.getTitle(), bookModel.getAuthor(), bookModel.getStock(), bookModel.getUrl()))
+                    .map(bookModel -> {
+                        Book book = new Book(bookModel.getId(), bookModel.getTitle(), bookModel.getAuthor(), bookModel.getStock(), bookModel.getUrl());
+                        book.setBorrowerId(user.getEmail());
+                        book.setDueDate(bookModel.getDueDate());
+                        return book;
+                    })
                     .toList();
         }
         final List<UserModel> users = userRepository.findAll();

@@ -6,12 +6,10 @@ import {useAuth} from "../context/AuthContext.tsx";
 import {CommonConstants} from "../CommonConstants.ts";
 
 export const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { setRole, isAuthenticated } = useAuth();
+    const {email, password, setEmail, setPassword, setRole, isAuthenticated } = useAuth();
 
     useEffect(() => {
         if(isAuthenticated) {

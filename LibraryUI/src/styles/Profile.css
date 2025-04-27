@@ -42,8 +42,8 @@
     flex-grow: 1;
     padding: 30px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     background-color: #fefefe;
 }
 

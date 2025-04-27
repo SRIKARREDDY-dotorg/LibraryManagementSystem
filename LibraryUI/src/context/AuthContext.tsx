@@ -2,8 +2,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
+    email: string;
+    password: string;
     role: string | null;
     setRole: (role: string | null) => void;
+    setEmail: (email: string) => void;
+    setPassword: (password: string) => void;
     isAuthenticated: boolean;
     logout: () => void;
 }
@@ -15,6 +19,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Initialize from localStorage
         return localStorage.getItem('role');
     });
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     let isAuthenticated = !!role;
 
@@ -33,8 +39,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [role]);
 
     const value = {
+        email,
+        password,
         role,
         setRole,
+        setEmail,
+        setPassword,
         isAuthenticated,
         logout
     };
