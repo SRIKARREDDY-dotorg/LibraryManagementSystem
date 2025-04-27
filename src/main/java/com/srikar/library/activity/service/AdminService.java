@@ -59,7 +59,20 @@ public class AdminService extends UserService {
      *
      * @return
      */
-    public List<Book> checkBorrowedBooks() {
+    public List<Book> checkBorrowedBooks(final boolean isAdmin, final String userId) {
+        if (!isAdmin) {
+            final UserModel user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                throw new UserNotFoundException("User not found");
+            }
+            if (user.getBorrowedBooks() == null) {
+                return new ArrayList<>();
+            }
+            return user.getBorrowedBooks().stream()
+                    .map(bookId -> bookRepository.findById(bookId).orElse(null))
+                    .map(bookModel -> new Book(bookModel.getId(), bookModel.getTitle(), bookModel.getAuthor(), bookModel.getStock(), bookModel.getUrl()))
+                    .toList();
+        }
         final List<UserModel> users = userRepository.findAll();
         final List<Book> books = new ArrayList<>();
         if (users != null) {

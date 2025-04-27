@@ -4,6 +4,7 @@ import com.srikar.library.dto.BookCreateRequest;
 import com.srikar.library.dto.ErrorResponse;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.activity.service.AdminService;
+import com.srikar.library.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 /**
  * Controller class for handling user-related operations
  */
@@ -25,7 +24,8 @@ import java.util.List;
 public class AdminController extends UserController {
     @Autowired
     private AdminService adminService;
-
+    @Autowired
+    private JwtUtil jwtUtil;
     // Override the parent class methods you want to customize
     @Override
     @GetMapping("/books")
@@ -87,12 +87,10 @@ public class AdminController extends UserController {
 
     @GetMapping("/checkBorrowed")
     public ResponseEntity<?> checkBorrowed() {
-        if (!isAdmin()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new ErrorResponse("Access denied"));
-        }
+        // for admin return for all the users borrowed books including admin,
+        // If a user, then only show that users books.
         try{
-            return ResponseEntity.ok(adminService.checkBorrowedBooks());
+            return ResponseEntity.ok(adminService.checkBorrowedBooks(isAdmin(), jwtUtil.getAuthenticatedEmail()));
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("User not found"));
