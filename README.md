@@ -1,88 +1,147 @@
 # Library Management System
 
 ## Overview
-This project is a simple Library Management System implemented in Java using Test-Driven Development (TDD). It allows users to view books in the library.
+A full-stack library management application built with Spring Boot backend and React/TypeScript frontend. The system provides comprehensive book management capabilities, user authentication, and automated email notifications through a microservices architecture.
+
+## Technology Stack
+
+### Backend
+- **Framework**: Spring Boot 3.2.1
+- **Database**: MongoDB
+- **Security**: JWT-based authentication
+- **Message Queue**: RabbitMQ for asynchronous operations
+- **Email Service**: Integrated email notifications
+- **Cross-cutting Concerns**: Aspect-Oriented Programming (AOP)
+
+### Frontend
+- **Framework**: React 19.0.0 with TypeScript 5.7.2
+- **Build Tool**: Vite 6.3.2
+- **State Management**: React Context API
+- **Routing**: React Router
+- **HTTP Client**: Axios
+- **Notifications**: React Toastify
 
 ## Features
-- View books in the library
-- Add books to the library
-- Each book has a unique ID
-- Borrow book from the library per user limit(2)
-- Multiple copies of books are handled
-- Return valid books from the user to library. 
+- User authentication and authorization
+- Book management (add, view, borrow, return)
+- User profile management
+- Email notifications for book operations
+- Admin dashboard for inventory management
+- Multiple book copies handling
+- User borrowing limits (2 books per user)
+- Real-time notifications
 
-## Architectural Decisions
-- Used OOP principles to model the `Book`, `Library`, `User` classes.
-- `Library` maintains a list of books and exposes a method to view them.
-- Used `unmodifiableList` to ensure immutability when retrieving book data.
-- `Library` put, get and removes the book in constant time using map to make library scalable.
-- `User` class can view the books, and borrow books within limit.
-- `Admin` class extends the User having all features of User with additional permissions
-- Followed TDD by writing unit tests before implementation.
-- Each book has a unique identifier (`UUID`) for tracking.
-- Added Api's for the User operations, viewBooks, borrowBooks, create user.
+## Project Structure
+```
+├── Backend (Java)
+│   ├── controllers (REST endpoints)
+│   ├── services (Business logic)
+│   ├── models (Data entities)
+│   ├── repositories (Data access)
+│   ├── config (Application configuration)
+│   └── utils (Helper utilities)
+│
+└── Frontend (React/TypeScript)
+    ├── components (UI components)
+    ├── context (React context)
+    ├── styles (CSS modules)
+    └── types (TypeScript definitions)
+```
+
+## Getting Started
+
+### Prerequisites
+- Java 17 or higher
+- Node.js 16 or higher
+- MongoDB
+- RabbitMQ
+
+### Backend Setup
+1. Clone the repository
+2. Navigate to the root directory
+3. Install dependencies:
+   ```bash
+   mvn install
+   ```
+4. Create a `.env` file with required environment variables
+5. Run the application:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+### Frontend Setup
+1. Navigate to the LibraryUI directory:
+   ```bash
+   cd LibraryUI
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## API Documentation
+
+### User Endpoints
+- POST `/api/auth/register` - Register new user
+- POST `/api/auth/login` - User login
+- GET `/api/users/profile` - Get user profile
+- GET `/api/users/books` - Get user's borrowed books
+
+### Book Endpoints
+- GET `/api/books` - List all books
+- POST `/api/books` - Add new book (Admin only)
+- PUT `/api/books/{id}/borrow` - Borrow a book
+- PUT `/api/books/{id}/return` - Return a book
+
+### Admin Endpoints
+- GET `/api/admin/inventory` - View library inventory
+- GET `/api/admin/borrowed` - View all borrowed books
+- POST `/api/admin/books` - Add new books
+- PUT `/api/admin/books/{id}` - Update book details
+
+## Testing
+- Backend uses JUnit Jupiter and Mockito for unit testing
+- Test coverage includes controllers, services, and utilities
+- Run tests with:
+  ```bash
+  mvn test
+  ```
+
+## Development Guidelines
+- Follow Test-Driven Development (TDD) practices
+- Maintain consistent code formatting
+- Write comprehensive unit tests
+- Use TypeScript strict mode
+- Follow React best practices and hooks guidelines
+
+## Security Features
+- JWT-based authentication
+- Password encryption
+- Role-based access control
+- CORS configuration
+- Protected API endpoints
 
 ## Assumptions
-- The library starts empty.
-- Books have a title, an author, and a unique ID.
-- There exists only one admin in the application.
-- Admin can add books, check inventory and borrowed books
+- MongoDB is running locally on default port
+- RabbitMQ is configured for email notifications
+- Admin users are pre-configured in the system
+- Each book has a unique identifier
+- Users can borrow up to 2 books at a time
 
-### Demo run
+## Future Enhancements
+1. Implement structured logging
+2. Add metrics collection and monitoring
+3. Enhance frontend test coverage
+4. Expand API documentation with Swagger/OpenAPI
+5. Add book reservation system
+6. Implement fine calculation for late returns
 
-```
-/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=60774:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/pochasri/temp/LibraryManagement/target/classes:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.1/spring-boot-starter-web-3.2.1.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.1/spring-boot-starter-3.2.1.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.1/spring-boot-starter-logging-3.2.1.jar:/Users/pochasri/.m2/repository/ch/qos/logback/logback-classic/1.4.14/logback-classic-1.4.14.jar:/Users/pochasri/.m2/repository/ch/qos/logback/logback-core/1.4.14/logback-core-1.4.14.jar:/Users/pochasri/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/pochasri/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/pochasri/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/pochasri/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/pochasri/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/pochasri/.m2/repository/org/springframework/spring-core/6.1.2/spring-core-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/spring-jcl/6.1.2/spring-jcl-6.1.2.jar:/Users/pochasri/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.1/spring-boot-starter-json-3.2.1.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/pochasri/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.1/spring-boot-starter-tomcat-3.2.1.jar:/Users/pochasri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.17/tomcat-embed-core-10.1.17.jar:/Users/pochasri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.17/tomcat-embed-el-10.1.17.jar:/Users/pochasri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.17/tomcat-embed-websocket-10.1.17.jar:/Users/pochasri/.m2/repository/org/springframework/spring-web/6.1.2/spring-web-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/spring-beans/6.1.2/spring-beans-6.1.2.jar:/Users/pochasri/.m2/repository/io/micrometer/micrometer-observation/1.12.1/micrometer-observation-1.12.1.jar:/Users/pochasri/.m2/repository/io/micrometer/micrometer-commons/1.12.1/micrometer-commons-1.12.1.jar:/Users/pochasri/.m2/repository/org/springframework/spring-webmvc/6.1.2/spring-webmvc-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/spring-aop/6.1.2/spring-aop-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/spring-context/6.1.2/spring-context-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/spring-expression/6.1.2/spring-expression-6.1.2.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-devtools/3.2.1/spring-boot-devtools-3.2.1.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot/3.2.1/spring-boot-3.2.1.jar:/Users/pochasri/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.1/spring-boot-autoconfigure-3.2.1.jar com.srikar.library.LibraryDemo
-User{name='John Doe', email='john.doe@example.com', id='USRfdb34ac3'}
+## Contributing
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
 
-Library is empty
-
-Book added: The Great Gatsby
-Book added: To Kill a Mockingbird
-Book added: 1984
-Books in the library:
-Book{id='BK8beecf12', title='To Kill a Mockingbird', author='Harper Lee', stock=1}
-Book{id='BK03361cd1', title='1984', author='George Orwell', stock=1}
-Book{id='BK0e20d899', title='The Great Gatsby', author='F. Scott Fitzgerald', stock=2}
-
-The Great Gatsby Book borrowed successfully.
-To Kill a Mockingbird Book borrowed successfully.
-To Kill a Mockingbird Book is out of stock.
-
-You have reached the borrowing limit.
-
-Borrowed books
-Book{id='BK0e20d899', title='The Great Gatsby', author='F. Scott Fitzgerald', stock=1}
-Book{id='BK8beecf12', title='To Kill a Mockingbird', author='Harper Lee', stock=0}
-
-Library Inventory:
-Book{id='BK03361cd1', title='1984', author='George Orwell', stock=1}
-Book{id='BK0e20d899', title='The Great Gatsby', author='F. Scott Fitzgerald', stock=1}
-
-Users who have borrowed books:
-John Doe has borrowed:
-Book{id='BK0e20d899', title='The Great Gatsby', author='F. Scott Fitzgerald', stock=1}
-Book{id='BK8beecf12', title='To Kill a Mockingbird', author='Harper Lee', stock=0}
-
-Process finished with exit code 0
-```
-
-### Usage
-
-* Unzip the file and load it in the IntelliJ or some editor.
-* Install mvn and run `mvn install` to install the dependancies.
-* Use `mvn spring-boot:run` for running the application
-* For the sake of easyness: 
-  * Launch the Spring application using the Run button in LibraryApplication class.
-  * Use curl commands to test the api's, 
-  sample
-```
-curl -X POST \
-  'http://localhost:8080/api/users/USR31f9f3b2/addbook' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "stock": 5
-}'
-```
-* Use LibraryDemo class, to test logic without spring application.
+## License
+This project is licensed under the MIT License - see the LICENSE.md file for details
