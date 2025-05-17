@@ -21,6 +21,19 @@ export const BorrowedBooks = () => {
         return new Date(isoString).toLocaleDateString(undefined, options);
     };
 
+    const getStatusClass = (status: string) => {
+        switch (status) {
+            case 'OVERDUE':
+                return 'status-overdue';
+            case 'DUE_SOON':
+                return 'status-due-soon';
+            case 'ON_TIME':
+                return 'status-on-time';
+            default:
+                return '';
+        }
+    };
+
     const fetchBorrowedBooks = async () => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -78,6 +91,7 @@ export const BorrowedBooks = () => {
                     <th>Author</th>
                     {role === "ADMIN" && <th>Borrower</th>}
                     <th>Due Date</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -97,6 +111,7 @@ export const BorrowedBooks = () => {
                         <td>{book.author}</td>
                         {role === "ADMIN" && <td>{book.borrowerId}</td>}
                         <td>{formatDate(book.dueDate)}</td>
+                        <td className={getStatusClass(book.status)}>{book.status}</td>
                     </tr>
                 ))}
                 </tbody>

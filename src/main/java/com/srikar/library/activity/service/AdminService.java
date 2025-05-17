@@ -89,6 +89,7 @@ public class AdminService extends UserService {
                                 Book book = new Book(bookModel.getId(), bookModel.getTitle(), bookModel.getAuthor(), bookModel.getStock(), bookModel.getUrl());
                                 book.setBorrowerId(user.getEmail());
                                 book.setDueDate(bookModel.getDueDate());
+                                book.calculateStatus();
                                 return book;
                             })
                             .toList();
