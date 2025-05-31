@@ -24,13 +24,13 @@ jobs:
       run: mvn clean verify
 
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-reports
         path: target/site/jacoco/
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         file: target/site/jacoco/jacoco.xml
         fail_ci_if_error: true
