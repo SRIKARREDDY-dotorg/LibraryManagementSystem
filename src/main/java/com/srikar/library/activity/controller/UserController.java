@@ -33,9 +33,11 @@ public abstract class UserController {
      * @return
      */
     @GetMapping("/books")
-    public ResponseEntity<?> viewBooks() {
+    public ResponseEntity<?> viewBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
         try {
-            return ResponseEntity.ok(userService.viewBooks());
+            return ResponseEntity.ok(userService.viewBooks(page, size));
         } catch (UserNotFoundException | UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("User not found"));

@@ -14,6 +14,15 @@ interface Book {
     stock: number;
 }
 
+interface PageResponse {
+    content: Book[];
+    currentPage: number;
+    totalPages: number;
+    totalElements: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+}
+
 type FilterType = 'all' | 'available' | 'out-of-stock';
 
 export const Books = () => {
@@ -23,13 +32,17 @@ export const Books = () => {
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
+    const [isPaginationLoading, setIsPaginationLoading] = useState(false);
     const sessionExpiredRef = useRef(false);
     const [borrowLoading, setBorrowLoading] = useState<string | null>(null);
     const [returnLoading, setReturnLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [hasNext, setHasNext] = useState(false);
+    const [hasPrevious, setHasPrevious] = useState(false);
 
     const navigate = useNavigate();
-
     const { role, isAuthenticated, logout } = useAuth();
     
     const fetchBooks = useCallback(async () => {
@@ -39,7 +52,7 @@ export const Books = () => {
                 throw new Error("No authentication token found");
             }
 
-            const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/books`, {
+            const response = await fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/books?page=${currentPage}&size=12`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,16 +70,20 @@ export const Books = () => {
                 }
                 throw new Error('Failed to fetch books');
             }
-            const data = await response.json();
-            setBooks(data);
-            setMasterBooks(data);
+            const data: PageResponse = await response.json();
+            setBooks(data.content);
+            setMasterBooks(data.content);
+            setTotalPages(data.totalPages);
+            setHasNext(data.hasNext);
+            setHasPrevious(data.hasPrevious);
             setError(null);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
             setIsLoading(false);
+            setIsPaginationLoading(false);
         }
-    }, [logout]);
+    }, [currentPage, logout]);
 
     const borrowBooks = async (bookId: string) => {
         try {
@@ -289,6 +306,43 @@ export const Books = () => {
                         No books found for the selected filter.
                     </div>
                 )}
+            </div>
+            <div className="pagination-controls">
+                <button
+                    className="pagination-button"
+                    onClick={async () => {
+                        setIsPaginationLoading(true);
+                        setCurrentPage(prev => prev - 1);
+                    }}
+                    disabled={!hasPrevious || isPaginationLoading}
+                >
+                    {isPaginationLoading && currentPage > 0 ? (
+                        <span className="button-loading">
+                            <div className="loading-spinner-small"></div>
+                        </span>
+                    ) : (
+                        'Previous'
+                    )}
+                </button>
+                <span className="page-info">
+                    Page {currentPage + 1} of {totalPages}
+                </span>
+                <button
+                    className="pagination-button"
+                    onClick={async () => {
+                        setIsPaginationLoading(true);
+                        setCurrentPage(prev => prev + 1);
+                    }}
+                    disabled={!hasNext || isPaginationLoading}
+                >
+                    {isPaginationLoading && currentPage < totalPages - 1 ? (
+                        <span className="button-loading">
+                            <div className="loading-spinner-small"></div>
+                        </span>
+                    ) : (
+                        'Next'
+                    )}
+                </button>
             </div>
         </div>
     );

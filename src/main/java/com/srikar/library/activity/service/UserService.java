@@ -1,12 +1,14 @@
 package com.srikar.library.activity.service;
 
 import com.srikar.library.dto.Book;
+import com.srikar.library.dto.PageResponse;
 import com.srikar.library.dao.book.BookModel;
 import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.dao.user.UserModel;
 import com.srikar.library.dao.user.UserRepository;
 import com.srikar.library.queue.EmailProducer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,14 +34,19 @@ public class UserService {
     }
 
     /**
-     * View all books in the library
-     * @return
+     * View all books in the library with pagination
+     * @param page Page number (0-based)
+     * @param size Number of items per page
+     * @return PageResponse containing books and pagination metadata
      */
-    public List<Book> viewBooks() {
-        // later add pagination
-        // for now return all books
-        // simplify the code
-        return bookRepository.findAll().stream()
+    public PageResponse<Book> viewBooks(int page, int size) {
+        // Get total count
+        long totalElements = bookRepository.count();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        // Get paginated data
+        List<Book> books = bookRepository.findAll(PageRequest.of(page, size))
+                .stream()
                 .map(bookModel -> new Book(
                         bookModel.getId(),
                         bookModel.getTitle(),
@@ -47,6 +54,8 @@ public class UserService {
                         bookModel.getStock(),
                         bookModel.getUrl()))
                 .toList();
+
+        return new PageResponse<>(books, page, totalPages, totalElements);
     }
 
     /**

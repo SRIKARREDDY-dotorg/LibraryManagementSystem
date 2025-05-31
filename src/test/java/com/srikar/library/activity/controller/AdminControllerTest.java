@@ -5,6 +5,7 @@ import com.srikar.library.dto.Book;
 import com.srikar.library.dto.BookCreateRequest;
 import com.srikar.library.dto.ErrorResponse;
 import com.srikar.library.activity.service.UserService;
+import com.srikar.library.dto.PageResponse;
 import com.srikar.library.exception.UserNotFoundException;
 import com.srikar.library.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -288,24 +289,41 @@ class AdminControllerTest {
         // Arrange
         mockAdminRole();
         List<Book> books = Arrays.asList(sampleBook);
-        when(userService.viewBooks()).thenReturn(books);
+        PageResponse<Book> pageResponse = new PageResponse<>(books, 0, 1, 1);
+        when(userService.viewBooks(0, 12)).thenReturn(pageResponse);
 
         // Act
-        ResponseEntity<?> response = adminController.viewBooks();
+        ResponseEntity<?> response = adminController.viewBooks(0, 12);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(books, response.getBody());
+        assertEquals(pageResponse, response.getBody());
+    }
+
+    @Test
+    void viewBooks_WithCustomPagination_ReturnsBooks() {
+        // Arrange
+        mockAdminRole();
+        List<Book> books = Arrays.asList(sampleBook);
+        PageResponse<Book> pageResponse = new PageResponse<>(books, 1, 2, 2);
+        when(userService.viewBooks(1, 20)).thenReturn(pageResponse);
+
+        // Act
+        ResponseEntity<?> response = adminController.viewBooks(1, 20);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(pageResponse, response.getBody());
     }
 
     @Test
     void viewBooks_WhenUserNotFound_ReturnsNotFound() {
         // Arrange
         mockAdminRole();
-        when(userService.viewBooks()).thenThrow(new UserNotFoundException("User not found"));
+        when(userService.viewBooks(0, 12)).thenThrow(new UserNotFoundException("User not found"));
 
         // Act
-        ResponseEntity<?> response = adminController.viewBooks();
+        ResponseEntity<?> response = adminController.viewBooks(0, 12);
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -371,4 +389,119 @@ class AdminControllerTest {
         assertEquals("Books returned successfully", response.getBody());
     }
 
+    @Test
+    void addBook_WhenUnexpectedError_ReturnsInternalError() {
+        // Arrange
+        mockAdminRole();
+        when(adminService.addBook(any(), any(), anyInt(), any()))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        ResponseEntity<?> response = adminController.addBook(validRequest);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("An unexpected error occurred", error.getMessage());
+    }
+
+    @Test
+    void updateBook_WhenUnexpectedError_ReturnsInternalError() {
+        // Arrange
+        mockAdminRole();
+        when(adminService.updateBook(any(), any(), any(), anyInt(), any()))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        ResponseEntity<?> response = adminController.updateBook(validRequest);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("An unexpected error occurred", error.getMessage());
+    }
+
+    @Test
+    void borrowBook_WhenUnexpectedError_ReturnsInternalError() {
+        // Arrange
+        mockAdminRole();
+        String adminEmail = "admin@example.com";
+        when(jwtUtil.getAuthenticatedEmail()).thenReturn(adminEmail);
+        UserController.BorrowRequest request = new UserController.BorrowRequest();
+        request.bookId = "BK123";
+        when(userService.borrowBook(adminEmail, "BK123"))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        ResponseEntity<?> response = adminController.borrowBook(request);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("Database error", error.getMessage());
+    }
+
+    @Test
+    void returnBooks_WhenUnexpectedError_ReturnsInternalError() {
+        // Arrange
+        mockAdminRole();
+        String adminEmail = "admin@example.com";
+        when(jwtUtil.getAuthenticatedEmail()).thenReturn(adminEmail);
+        UserController.BorrowRequest request = new UserController.BorrowRequest();
+        request.bookId = "BK123";
+        when(userService.returnBooks(adminEmail, "BK123"))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        ResponseEntity<?> response = adminController.returnBooks(request);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("An unexpected error occurred", error.getMessage());
+    }
+
+    @Test
+    void returnBooks_WhenServiceReturnsFalse_ReturnsNotFound() {
+        // Arrange
+        mockAdminRole();
+        String adminEmail = "admin@example.com";
+        when(jwtUtil.getAuthenticatedEmail()).thenReturn(adminEmail);
+        UserController.BorrowRequest request = new UserController.BorrowRequest();
+        request.bookId = "BK123";
+        when(userService.returnBooks(adminEmail, "BK123")).thenReturn(false);
+
+        // Act
+        ResponseEntity<?> response = adminController.returnBooks(request);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("Unable to return books. due to unknown reason", error.getMessage());
+    }
+
+    @Test
+    void borrowBook_WhenServiceReturnsFalse_ReturnsNotFound() {
+        // Arrange
+        mockAdminRole();
+        String adminEmail = "admin@example.com";
+        when(jwtUtil.getAuthenticatedEmail()).thenReturn(adminEmail);
+        UserController.BorrowRequest request = new UserController.BorrowRequest();
+        request.bookId = "BK123";
+        when(userService.borrowBook(adminEmail, "BK123")).thenReturn(false);
+
+        // Act
+        ResponseEntity<?> response = adminController.borrowBook(request);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        ErrorResponse error = (ErrorResponse) response.getBody();
+        assertNotNull(error);
+        assertEquals("Unable to borrow book. due to unknown reason", error.getMessage());
+    }
 }

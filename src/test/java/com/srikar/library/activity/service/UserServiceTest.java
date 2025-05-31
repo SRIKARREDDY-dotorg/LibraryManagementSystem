@@ -5,12 +5,14 @@ import com.srikar.library.dao.book.BookRepository;
 import com.srikar.library.dao.user.UserModel;
 import com.srikar.library.dao.user.UserRepository;
 import com.srikar.library.dto.Book;
+import com.srikar.library.dto.PageResponse;
 import com.srikar.library.queue.EmailProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,26 +50,31 @@ class UserServiceTest {
                 BookModel.builder().id("BK123").title("Book 1").author("Author 1").stock(5).url("url1").build(),
                 BookModel.builder().id("BK456").title("Book 2").author("Author 2").stock(3).url("url2").build()
         );
-        when(bookRepository.findAll()).thenReturn(bookModels);
+        when(bookRepository.count()).thenReturn(2L);
+        when(bookRepository.findAll(any(PageRequest.class))).thenReturn(new org.springframework.data.domain.PageImpl<>(bookModels));
 
         // Act
-        List<Book> result = userService.viewBooks();
+        PageResponse<Book> result = userService.viewBooks(0, 12);
 
         // Assert
-        assertEquals(2, result.size());
-        assertEquals("BK123", result.get(0).getId());
-        assertEquals("Book 1", result.get(0).getTitle());
-        assertEquals("Author 1", result.get(0).getAuthor());
-        assertEquals(5, result.get(0).getStock());
-        assertEquals("url1", result.get(0).getUrl());
+        assertEquals(2, result.getContent().size());
+        assertEquals("BK123", result.getContent().get(0).getId());
+        assertEquals("Book 1", result.getContent().get(0).getTitle());
+        assertEquals("Author 1", result.getContent().get(0).getAuthor());
+        assertEquals(5, result.getContent().get(0).getStock());
+        assertEquals("url1", result.getContent().get(0).getUrl());
         
-        assertEquals("BK456", result.get(1).getId());
-        assertEquals("Book 2", result.get(1).getTitle());
-        assertEquals("Author 2", result.get(1).getAuthor());
-        assertEquals(3, result.get(1).getStock());
-        assertEquals("url2", result.get(1).getUrl());
+        assertEquals("BK456", result.getContent().get(1).getId());
+        assertEquals("Book 2", result.getContent().get(1).getTitle());
+        assertEquals("Author 2", result.getContent().get(1).getAuthor());
+        assertEquals(3, result.getContent().get(1).getStock());
+        assertEquals("url2", result.getContent().get(1).getUrl());
         
-        verify(bookRepository, times(1)).findAll();
+        assertEquals(0, result.getCurrentPage());
+        assertEquals(1, result.getTotalPages());
+        assertEquals(2, result.getTotalElements());
+
+        verify(bookRepository, times(1)).findAll(any(PageRequest.class));
     }
 
     @Test
@@ -218,7 +225,7 @@ class UserServiceTest {
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(userModel));
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(bookModel));
-        
+
         // Act
         boolean result = userService.returnBooks(userId, bookId);
         
