@@ -7,7 +7,7 @@ export const BorrowedBooks = () => {
     const [books, setBooks] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const {role, isAuthenticated} = useAuth();
+    const {role, isAuthenticated, token} = useAuth();
     useEffect(() => {
         fetchBorrowedBooks();
     }, []);
@@ -35,7 +35,6 @@ export const BorrowedBooks = () => {
     };
 
     const fetchBorrowedBooks = async () => {
-        const token = localStorage.getItem("token");
         if (!token) {
             throw new Error("No authentication token found");
         }

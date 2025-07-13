@@ -17,7 +17,7 @@ export const Book = () => {
         author: '',
         url: ''
     });
-    const { role, isAuthenticated } = useAuth();
+    const { role, isAuthenticated, token } = useAuth();
     
     const [errors, setErrors] = useState<Partial<BookFormData>>({});
 
@@ -61,7 +61,6 @@ export const Book = () => {
         e.preventDefault();
 
         if (validateForm()) {
-            const token = localStorage.getItem("token");
             if (!token) {
                 throw new Error("No authentication token found");
             }

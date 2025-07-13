@@ -2,11 +2,13 @@ import {useRef, useState} from 'react';
 import '../styles/Profile.css';
 import { toast } from 'react-toastify';
 import {useAuth} from "../context/AuthContext.tsx";
+import { useNavigate } from 'react-router-dom';
 import {BorrowedBooks} from "./BorrowedBooks.tsx";
 
 export const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
-    const {email, password} = useAuth();
+    const {email, password, logout} = useAuth();
+    const navigate = useNavigate();
     const currentEmail = useRef(email);
     const currentPassword = useRef(password);
     const [message, setMessage] = useState('');
@@ -21,7 +23,9 @@ export const Profile = () => {
         setTimeout(() => setMessage(''), 3000); // Clear after 3s
     };
     const handleSignout = () => {
-        toast.info('Signed out! (you can add redirect logic here)');
+        logout();
+        navigate('/login');
+        toast.info('Signed out successfully!');
     };
     return (
         <div className="profile-container">

@@ -45,6 +45,7 @@ public class AuthController {
         String token = jwtUtil.generateToken(user.getEmail(), role);
         return ResponseEntity.ok(new AuthResponse(token, role));
     }
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
         if (userRepository.findById(request.getEmail()).isPresent()) {
@@ -58,6 +59,31 @@ public class AuthController {
         userRepository.save(user);
         return ResponseEntity.ok("Successfully Registered");
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody AuthRequest request) {
+        if (request.getRefreshToken() == null || request.getRefreshToken().isEmpty()) {
+            return ResponseEntity.status(400).body("Refresh token is required");
+        }
+        
+        try {
+            String email = jwtUtil.extractUsername(request.getRefreshToken());
+            
+            Optional<UserModel> userOptional = userRepository.findById(email);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(401).body("User not found");
+            }
+            
+            UserModel user = userOptional.get();
+            final String role = user.getEmail().equals("admin@example.com") ? "ADMIN" : "USER";
+            String newToken = jwtUtil.generateToken(user.getEmail(), role);
+            
+            return ResponseEntity.ok(new AuthResponse(newToken, role));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid refresh token");
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
         // Normally, invalidate the token

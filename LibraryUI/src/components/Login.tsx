@@ -9,7 +9,7 @@ export const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const {email, password, setEmail, setPassword, setRole, isAuthenticated } = useAuth();
+    const {email, password, setEmail, setPassword, setAuthState, isAuthenticated } = useAuth();
 
     useEffect(() => {
         if(isAuthenticated) {
@@ -25,9 +25,17 @@ export const Login = () => {
                 email,
                 password,
             });
-            setRole(response.data.role);
-            localStorage.setItem("token", response.data.token);
-            navigate("/books"); // Redirect to a dashboard/home page
+            const tokenExpiry = Date.now() + CommonConstants.TOKEN_EXPIRY_TIME;
+            const refreshTokenExpiry = Date.now() + CommonConstants.REFRESH_TOKEN_EXPIRY_TIME;
+            
+            setAuthState({
+                token: response.data.token,
+                refreshToken: response.data.refreshToken || response.data.token,
+                role: response.data.role,
+                tokenExpiry,
+                refreshTokenExpiry
+            });
+            navigate("/books");
         } catch (err : any) {
             setLoading(false); // Stop loading
             if (err.response) {

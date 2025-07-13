@@ -43,11 +43,10 @@ export const Books = () => {
     const [hasPrevious, setHasPrevious] = useState(false);
 
     const navigate = useNavigate();
-    const { role, isAuthenticated, logout } = useAuth();
+    const { role, isAuthenticated, logout, token } = useAuth();
     
     const fetchBooks = useCallback(async () => {
         try {
-            const token = localStorage.getItem("token");
             if (!token) {
                 throw new Error("No authentication token found");
             }
@@ -83,11 +82,10 @@ export const Books = () => {
             setIsLoading(false);
             setIsPaginationLoading(false);
         }
-    }, [currentPage, logout]);
+    }, [currentPage, logout, token]);
 
     const borrowBooks = async (bookId: string) => {
         try {
-            const token = localStorage.getItem("token");
             if (!token) {
                 throw new Error("No authentication token found");
             }
@@ -122,7 +120,6 @@ export const Books = () => {
     }
     const returnBooks = async (bookId: string) => {
         try {
-            const token = localStorage.getItem("token");
             if (!token) {
                 throw new Error("No authentication token found");
             }

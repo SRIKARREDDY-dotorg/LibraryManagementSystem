@@ -31,6 +31,11 @@ public class JwtUtil {
     public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

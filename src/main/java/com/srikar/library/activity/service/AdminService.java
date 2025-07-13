@@ -42,6 +42,16 @@ public class AdminService extends UserService {
         bookRepository.save(bookModel);
         return book;
     }
+
+    /**
+     * Update the book in library
+     * @param bookId
+     * @param title
+     * @param author
+     * @param stock
+     * @param url
+     * @return
+     */
     public Book updateBook(String bookId, String title, String author, int stock, String url) {
         final BookModel bookModel = bookRepository.findById(bookId).orElseThrow(() -> new UserNotFoundException("Book not found with id: " + bookId));
         // set if the fields are present
