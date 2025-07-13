@@ -41,6 +41,7 @@ export const Books = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [hasNext, setHasNext] = useState(false);
     const [hasPrevious, setHasPrevious] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
     const navigate = useNavigate();
     const { role, isAuthenticated, logout, token } = useAuth();
@@ -189,7 +190,13 @@ export const Books = () => {
             fetchBooks();
         }
     }, [fetchBooks, isAuthenticated]);
-    // Static book list
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => setOpenDropdown(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
     
     if (!isAuthenticated || sessionExpiredRef.current) {
         return (
@@ -261,6 +268,32 @@ export const Books = () => {
                 {filteredBooks.length > 0 ? (
                     filteredBooks.map((book) => (
                         <div key={book.id} className="book-card">
+                            {role === 'ADMIN' && (
+                                <div className="book-menu">
+                                    <button 
+                                        className="menu-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setOpenDropdown(openDropdown === book.id ? null : book.id);
+                                        }}
+                                    >
+                                        ⋮
+                                    </button>
+                                    {openDropdown === book.id && (
+                                        <div className="dropdown-menu">
+                                            <button 
+                                                className="dropdown-item"
+                                                onClick={() => {
+                                                    navigate(`/update_book/${book.id}`, { state: { book } });
+                                                    setOpenDropdown(null);
+                                                }}
+                                            >
+                                                Update Book
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                             <div className="book-image">
                                 <img
                                     src={book.url}
@@ -294,7 +327,6 @@ export const Books = () => {
                                         {returnLoading === book.id ? 'Returning...' : 'Return Book'}
                                     </button>
                                 </div>
-
                             </div>
                         </div>
                     ))

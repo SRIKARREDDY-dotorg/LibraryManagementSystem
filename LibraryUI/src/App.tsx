@@ -4,6 +4,7 @@ import {Login} from "./components/Login.tsx";
 import {Register} from "./components/Register.tsx";
 import {Books} from "./components/Books.tsx";
 import {Book} from "./components/Book.tsx";
+import {UpdateBook} from "./components/UpdateBook.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -27,6 +28,7 @@ export default function LibraryApp() {
                             <Route path="/signup" element={<Register />} />
                             <Route path="/books" element={<Books />} />
                             <Route path="/add_book" element={<Book />}/>
+                            <Route path="/update_book/:id" element={<UpdateBook />}/>
                             <Route path="/profile" element={<Profile />} />
                             {/* Add more routes as needed */}
                         </Routes>
