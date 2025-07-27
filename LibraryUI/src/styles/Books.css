@@ -54,6 +54,15 @@
     font-size: 16px;
 }
 
+.search-loading {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+}
+
 
 .filter-controls {
     display: flex;

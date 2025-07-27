@@ -28,11 +28,13 @@ type FilterType = 'all' | 'available' | 'out-of-stock';
 export const Books = () => {
     const [books, setBooks] = useState<Book[]>([]);
     const [masterBooks, setMasterBooks] = useState<Book[]>([]);
+    const [allBooks, setAllBooks] = useState<Book[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [filter, setFilter] = useState<FilterType>('all');
     const [isLoading, setIsLoading] = useState(true);
     const [isPaginationLoading, setIsPaginationLoading] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
     const sessionExpiredRef = useRef(false);
     const [borrowLoading, setBorrowLoading] = useState<string | null>(null);
     const [returnLoading, setReturnLoading] = useState<string | null>(null);
@@ -84,6 +86,44 @@ export const Books = () => {
             setIsPaginationLoading(false);
         }
     }, [currentPage, logout, token]);
+
+    const fetchAllPagesForSearch = useCallback(async () => {
+        if (!token || allBooks.length > 0) return;
+        
+        setIsSearching(true);
+        const allBooksData: Book[] = [];
+        
+        try {
+            // Fetch all pages in parallel
+            const pagePromises = [];
+            for (let page = 0; page < totalPages; page++) {
+                if (page === currentPage) continue; // Skip current page as we already have it
+                
+                pagePromises.push(
+                    fetch(`${CommonConstants.BACKEND_END_POINT}/api/users/books?page=${page}&size=12`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(res => res.json())
+                );
+            }
+            
+            const results = await Promise.all(pagePromises);
+            results.forEach(data => {
+                allBooksData.push(...data.content);
+            });
+            
+            // Add current page books
+            allBooksData.push(...masterBooks);
+            setAllBooks(allBooksData);
+        } catch (err) {
+            console.error('Failed to fetch all pages:', err);
+        } finally {
+            setIsSearching(false);
+        }
+    }, [token, totalPages, currentPage, masterBooks, allBooks.length]);
 
     const borrowBooks = async (bookId: string) => {
         try {
@@ -165,25 +205,44 @@ export const Books = () => {
     });
 
     useEffect(() => {
-        const searchTerm = searchQuery.toLowerCase();
-    
-        const filtered = masterBooks.filter((book) => {
-            const matchesSearch =
-                book.title.toLowerCase().includes(searchTerm) ||
-                book.author.toLowerCase().includes(searchTerm);
-    
-            switch (filter) {
-                case 'available':
-                    return matchesSearch && book.stock > 0;
-                case 'out-of-stock':
-                    return matchesSearch && book.stock === 0;
-                default:
-                    return matchesSearch;
+        const timeoutId = setTimeout(() => {
+            const searchTerm = searchQuery.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                setBooks(masterBooks);
+                return;
             }
-        });
-    
-        setBooks(filtered);
-    }, [searchQuery, filter, masterBooks]);
+
+            // Immediately search current page
+            const currentPageResults = masterBooks.filter(book =>
+                book.title.toLowerCase().includes(searchTerm) ||
+                book.author.toLowerCase().includes(searchTerm)
+            );
+
+            // Start fetching other pages in background
+            fetchAllPagesForSearch();
+
+            // Search in all available books (current + fetched)
+            const searchInAllBooks = () => {
+                const allAvailableBooks = allBooks.length > 0 ? allBooks : masterBooks;
+                const allResults = allAvailableBooks.filter(book =>
+                    book.title.toLowerCase().includes(searchTerm) ||
+                    book.author.toLowerCase().includes(searchTerm)
+                );
+                setBooks(allResults);
+            };
+
+            if (currentPageResults.length > 0) {
+                setBooks(currentPageResults);
+                // Still search all books in background to get complete results
+                setTimeout(searchInAllBooks, 100);
+            } else {
+                searchInAllBooks();
+            }
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery, masterBooks, allBooks, fetchAllPagesForSearch]);
     
     useEffect(() => {
         if (isAuthenticated && !sessionExpiredRef.current) {
@@ -262,6 +321,11 @@ export const Books = () => {
                         onBlur={() => setIsSearchFocused(false)}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
+                    {isSearching && (
+                        <div className="search-loading">
+                            <div className="loading-spinner-small"></div>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="books-grid">
@@ -339,7 +403,7 @@ export const Books = () => {
             <div className="pagination-controls">
                 <button
                     className="pagination-button"
-                    onClick={async () => {
+                    onClick={() => {
                         setIsPaginationLoading(true);
                         setCurrentPage(prev => prev - 1);
                     }}
@@ -358,7 +422,7 @@ export const Books = () => {
                 </span>
                 <button
                     className="pagination-button"
-                    onClick={async () => {
+                    onClick={() => {
                         setIsPaginationLoading(true);
                         setCurrentPage(prev => prev + 1);
                     }}
